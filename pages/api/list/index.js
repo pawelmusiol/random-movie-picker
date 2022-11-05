@@ -5,7 +5,7 @@ import listModel from "../../../utils/models/list"
 export default async function handler(req, res) {
     const { method, body, query } = req
 
-    dbConnect()
+    await dbConnect()
 
     switch (method) {
         case "POST":

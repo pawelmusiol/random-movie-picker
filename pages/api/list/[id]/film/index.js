@@ -18,7 +18,7 @@ const getFilms = async (films) => {
 export default async function handler(req, res) {
     const { method, body, query } = req
 
-    dbConnect()
+    await dbConnect()
 
     switch (method) {
         case "GET":

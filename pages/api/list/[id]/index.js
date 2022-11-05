@@ -25,7 +25,7 @@ const verifyToken = (token) => {
 export default async function handler(req, res) {
     const { method, body, query, headers } = req
 
-    dbConnect()
+    await dbConnect()
     let result = {}
 
     switch (method) {
