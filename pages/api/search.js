@@ -8,7 +8,7 @@ export default async function handler(req, res) {
     switch (method) {
         case "GET":
 
-            let data = (await axios.get(`https://api.themoviedb.org/3/search/${query.type}?api_key=${process.env.TMDB_API_KEY}&query=${query.query}&page=${query.page}&include_adult=true`)).data
+            let data = (await axios.get(`https://api.themoviedb.org/3/search/${query.type}?api_key=${process.env.TMDB_API_KEY}&query=${query.query}&page=${query.page}&include_adult=true&language=${query.language}`)).data
 
             res.status(200).send({ results: data.results, page: data.page, totalPages: data.total_pages, totalResults: data.total_results, url: `api/search?query=${query.query}&type=${query.type}&page=` })
             break;

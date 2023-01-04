@@ -23,10 +23,16 @@ const ListsList = () => {
             setDialogOpen(true)
         })
     }
+    const switchPrivacy = (id, privacy) => {
+        axios.put(`/api/list/${id}/privacy`, { id: id, privacy: privacy, userId: UserId }).then(
+            res => dispatch({ type: 'SET_LISTS', lists: res.data.lists })
+        )
+
+    }
 
     const checkIfUserIsAdmin = (list) => {
         return list.users.find(user => user._id === UserId && user.isAdmin === true)
-        
+
     }
 
     return (
@@ -37,7 +43,9 @@ const ListsList = () => {
                     key={i}
                     list={list}
                     onRequest={() => inviteUser(list._id)}
-                    onDelete={checkIfUserIsAdmin(list) ? () => deleteList(list._id) : null} />
+                    onDelete={checkIfUserIsAdmin(list) ? () => deleteList(list._id) : null}
+                    onSwitchPrivacy={() => switchPrivacy(list._id, list.private)}
+                />
             )}
         </Grid>
     )

@@ -11,3 +11,4 @@ export { default as SingleList } from "./SingleList"
 export { default as CustomSnackbar } from "./CustomSnackbar"
 export { default as MoviePicker } from "./MoviePicker"
 export { default as ListInfo } from "./ListInfo"
+export { default as Landing } from './Landing'

@@ -1,11 +1,10 @@
-import { useEffect } from "react"
-import { Container } from "@mui/system"
-import axios from "axios"
-import { FilmSearch } from "../components"
+import { Landing } from '../components'
 
 export default function Home() {
-  
+
   return (
-    <>dupa</>
+    <>
+    <Landing />
+    </>
   )
 }

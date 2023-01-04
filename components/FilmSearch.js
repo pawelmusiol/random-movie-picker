@@ -1,6 +1,8 @@
 import { TextField, Button, Select, MenuItem, Box, InputLabel, FormControl } from "@mui/material"
 import { useState, useEffect } from "react"
 import axios from "axios"
+import { useAppContext } from "../context"
+import accents from 'remove-accents'
 
 const Types = [
     {
@@ -14,7 +16,8 @@ const Types = [
 
 ]
 
-const useSearch = (Name, Type, Genre, onSearch,) => {
+const useSearch = (Name, Type, Genre, Language, onSearch,) => {
+
 
     const [Error, setError] = useState({ name: false, type: false })
 
@@ -27,23 +30,26 @@ const useSearch = (Name, Type, Genre, onSearch,) => {
             errors = { ...errors, type: true }
         }
         setError(errors)
-        if(errors.name || errors.type) return false
+        if (errors.name || errors.type) return false
         return true
     }
 
     const onClick = (Type) => {
         if (validateInputs()) {
-            axios.get(`api/search?query=${Name}&type=${Type ? Type : 'multi'}&Genre=${Genre}&page=1`).then((res) => {
-                onSearch({...res.data, type: Type})
-            })
+
+            let uri = accents.remove(`/api/search?query=${Name}&type=${Type ? Type : 'multi'}&genre=${Genre}&page=1&language=${Language}`)
+            console.log(uri)
+            axios.get(uri).then((res) => {
+                onSearch({ ...res.data, type: Type })
+            }).catch((err) => console.log(err))
         }
     }
     return [onClick, Error]
 }
-const useGenres = () => {
+const useGenres = (Language) => {
     const [GenresList, setGenresList] = useState([])
     useEffect(() => {
-        axios.get('/api/getGenres').then((res) => {
+        axios.get(`/api/getGenres?language=${Language}`).then((res) => {
             setGenresList(res.data.genres)
         })
     }, [])
@@ -51,12 +57,13 @@ const useGenres = () => {
 }
 
 const FilmSearch = ({ onSearch }) => {
+    const [AppContext, setAppContext] = useAppContext()
     const [Type, setType] = useState("")
 
     const [FilmName, setFilmName] = useState("")
-    const GenresList = useGenres()
+    const GenresList = useGenres(AppContext.language)
     const [Genre, setGenre] = useState("")
-    const [onClick, Error] = useSearch(FilmName, Type, Genre, onSearch)
+    const [onClick, Error] = useSearch(FilmName, Type, Genre, AppContext.language, onSearch)
 
     return (
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>

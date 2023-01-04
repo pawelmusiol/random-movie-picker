@@ -79,11 +79,11 @@ const randomColorPicker = () => {
         'teal',
         'yellow']
 
-        return Colors[colorTypes[Math.floor(Math.random() * colorTypes.length)]][500]
-    }
+    return Colors[colorTypes[Math.floor(Math.random() * colorTypes.length)]][500]
+}
 
 const ListedUsers = ({ icon, list }) => {
-    const avatarColor = useCallback(() => randomColorPicker(),[])
+    const avatarColor = useCallback(() => randomColorPicker(), [])
     return (
         <List sx={{ display: 'flex', flexDirection: 'row', padding: 0 }}>
             {list.map((item, i) => (
@@ -100,7 +100,7 @@ const ListedUsers = ({ icon, list }) => {
     )
 }
 
-const ActionMenu = ({ onDelete, onRequest, acceptRequest, isPrivate }) => {
+const ActionMenu = ({ onDelete, onRequest, acceptRequest, isPrivate, onSwitchPrivacy }) => {
     const [AnchorEl, setAnchorEl] = useState(null)
     const handleClose = () => {
         setAnchorEl(null)
@@ -136,11 +136,16 @@ const ActionMenu = ({ onDelete, onRequest, acceptRequest, isPrivate }) => {
                         <DeleteImage src={Favourite.src} />
                         <Typography> Add To Favourite</Typography>
                     </MenuItem>
-                    {!isPrivate &&
-                        <MenuItem onClick={() => { onRequest(); handleClose(); }}>
-                            <DeleteImage src={PersonAdd.src} />
-                            <Typography> Invite Friends</Typography>
-                        </MenuItem>
+                    {!isPrivate ?
+                        <>
+                            <MenuItem onClick={() => { onRequest(); handleClose(); }}>
+                                <DeleteImage src={PersonAdd.src} />
+                                <Typography> Invite Friends</Typography>
+                            </MenuItem>
+                            <MenuItem onClick={() => { onSwitchPrivacy(); handleClose() }}> Switch To Private </MenuItem>
+                        </>
+                        :
+                        <MenuItem onClick={() => { onSwitchPrivacy(); handleClose() }}>Switch To Public</MenuItem>
                     }
                 </Menu>
             </>
@@ -149,7 +154,7 @@ const ActionMenu = ({ onDelete, onRequest, acceptRequest, isPrivate }) => {
     )
 }
 
-const SingleList = ({ list, onDelete, onRequest, acceptRequest }) => {
+const SingleList = ({ list, onDelete, onRequest, acceptRequest, onSwitchPrivacy }) => {
     let OwnerName = list.users.find(user => user.isOwner === true)?.name ? list.users.find(user => user.isOwner === true)?.name : 'Unknown'
     return (
         <Grid item xs={4} >
@@ -172,7 +177,13 @@ const SingleList = ({ list, onDelete, onRequest, acceptRequest }) => {
                             <Typography sx={{ cursor: 'pointer' }}>{OwnerName.charAt(0).toUpperCase() + OwnerName.slice(1)}</Typography>
                         </Link>
                     }
-                    action={<ActionMenu isPrivate={list.private} acceptRequest={acceptRequest} onDelete={onDelete} onRequest={onRequest} />}
+                    action={<ActionMenu
+                        isPrivate={list.private}
+                        acceptRequest={acceptRequest}
+                        onDelete={onDelete}
+                        onRequest={onRequest}
+                        onSwitchPrivacy={onSwitchPrivacy}
+                    />}
                 />
                 <CardMedia component="img" image={Cinema.src} height="194" alt={list.name} />
                 <CardContent>

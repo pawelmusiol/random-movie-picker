@@ -8,6 +8,15 @@ import { useRouter } from 'next/router'
 import { createTheme, ThemeProvider } from '@mui/material'
 
 const theme = createTheme({
+    palette: {
+        primary: {
+            main: "#06AED5",
+        },
+        secondary: {
+            main: '#F0C808',
+        },
+
+    },
     components: {
         MuiCssBaseline: {
             styleOverrides: {
@@ -44,7 +53,7 @@ const MainLayout = ({ children }) => {
             }).catch(err => {
                 if (err.response.status === 401) removeCookie('token')
                 dispatch({ type: 'CLEAR_USER' })
-                dispatch({ type: 'CLEAR_LISTS'})
+                dispatch({ type: 'CLEAR_LISTS' })
                 checkForAuth(router)
             })
         }
@@ -54,7 +63,10 @@ const MainLayout = ({ children }) => {
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline />
-            <Container maxWidth="lg" sx={{ marginTop: 10 }}>
+            <Container
+                maxWidth={router.pathname !== '/' ? "lg" : false}
+                disableGutters={router.pathname !== '/' ? false : true}
+                sx={{ marginTop: 8, }}>
                 <TopBar />
                 {children}
             </Container>

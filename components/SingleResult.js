@@ -3,10 +3,9 @@ import { styled } from '@mui/material/styles'
 import { Add } from '../icons'
 import { useState } from 'react'
 import { useSelector } from 'react-redux'
-import { CustomSnackbar } from '.'
+import { CustomSnackbar, CreateList } from '.'
 
 import Link from 'next/link'
-import Lists from '../redux/reducers/lists'
 import axios from 'axios'
 
 const IMG = styled('img')({
@@ -48,6 +47,7 @@ const AddMenu = ({ lists, film, user }) => {
                 onClose={handleClose}
             >
                 {lists.map((list, i) => <MenuItem onClick={() => AddFilm(list._id)} key={i}>{list.name}</MenuItem>)}
+                <MenuItem><CreateList /></MenuItem>
             </Menu>
         </>
     )
