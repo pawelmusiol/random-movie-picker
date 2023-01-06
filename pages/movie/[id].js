@@ -13,7 +13,7 @@ const Movie = () => {
         console.log(router.query)
         const { id } = router.query
         if (id !== undefined) {
-            axios.get(`/api/movie/${id}?language=${AppState.language}`).then(res => console.log(res))
+            axios.get(`/api/movie/${id}?language=${AppState.language}`).then(res => setData(res.data))
         }
     }, [router])
 

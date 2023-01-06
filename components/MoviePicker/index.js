@@ -36,13 +36,22 @@ const MoviePicker = ({ listId, films }) => {
         })
     }
     const switchAllFilms = (e) => {
+        console.log(e.target.checked)
         refs.current.forEach((input, i) => {
             setTimeout(() => {
-                input.click()
+                if(e.target.checked){
+                    if (!input.checked) {
+                        input.click()
+                    }
+                }
+                else if(!e.target.checked){
+                    if (input.checked) {
+                        input.click()
+                    }
+                }
             }, i * 10)
         })
     }
-    console.log(SelectedFilms)
 
     return (
         <Box>
@@ -91,7 +100,6 @@ const Picker = ({ selectedFilms }) => {
     }, [selectedFilms, Picking])
 
     const getOne = () => {
-        console.log(FilmsToChoose)
         setSelectedFilm(Films => {
             return {
                 left: { ...Films.left, sx: { ...Films.left.sx, transform: 'scale(.7)' } },

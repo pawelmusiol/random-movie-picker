@@ -11,6 +11,7 @@ const handler = async (req, res) => {
     switch (method) {
         case 'POST':
             const user = await getPassword(body.login)
+            console.log(await userModel.find())
             console.log(user)
             if (!user) {
                 res.status(401).send({ text: "Invalid Login" })

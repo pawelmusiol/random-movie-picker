@@ -12,6 +12,7 @@ import {
 } from "@mui/material"
 import { useRef, useState } from "react"
 import { Delete } from '../../icons'
+import { NoImage } from "../../images"
 import { useDispatch } from 'react-redux'
 import axios from "axios"
 import { green, red, yellow } from "@mui/material/colors"
@@ -67,7 +68,7 @@ const SingleFilm = ({ film, width, selectFilm, changePriority, deselectFilm, sx,
                     <CardMedia
                         className='slide'
                         component='img'
-                        image={`https://image.tmdb.org/t/p/w500/${film.posterPath}`}
+                        image={film.posterPath ? `https://image.tmdb.org/t/p/w500/${film.posterPath}` : NoImage.src}
                         alt={`${film.name} image`}
                         height={width * 3 / 2}
                         width={width}
