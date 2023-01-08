@@ -10,7 +10,8 @@ const getFilms = async (films, language) => {
             _id: film._id,
             name: result.name ? result.name : result.title,
             posterPath: result.poster_path,
-            releaseDate: result.release_date ? result.release_date : result.first_air_date
+            releaseDate: result.release_date ? result.release_date : result.first_air_date,
+            tmdbId: result.id
         }
 
     }))

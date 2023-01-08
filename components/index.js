@@ -12,3 +12,9 @@ export { default as CustomSnackbar } from "./CustomSnackbar"
 export { default as MoviePicker } from "./MoviePicker"
 export { default as ListInfo } from "./ListInfo"
 export { default as Landing } from './Landing'
+export { default as StreamingProviders } from './Movie/StreamingProviders'
+export { default as MovieHeader } from './Movie/Header'
+export { default as MovieMedia } from './Movie/Media'
+export { default as Cast } from './Movie/Cast'
+export { default as VoteStars } from './VoteStars'
+export { default as MovieInfo } from './Movie/Info'

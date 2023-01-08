@@ -16,6 +16,7 @@ import { NoImage } from "../../images"
 import { useDispatch } from 'react-redux'
 import axios from "axios"
 import { green, red, yellow } from "@mui/material/colors"
+import { useRouter } from "next/router"
 
 const DeleteImage = styled('img')(({ theme, color }) => ({
     backgroundColor: color ? color : 'none',
@@ -25,6 +26,7 @@ const DeleteImage = styled('img')(({ theme, color }) => ({
 
 const SingleFilm = ({ film, width, selectFilm, changePriority, deselectFilm, sx, inputRef, listId, id = undefined, noAction = false }) => {
 
+    const router = useRouter()
     const cardRef = useRef(null)
     const [Priority, setPriority] = useState(1)
     const dispatch = useDispatch()
@@ -66,6 +68,7 @@ const SingleFilm = ({ film, width, selectFilm, changePriority, deselectFilm, sx,
                     />
                     <PriorityGroup Priority={Priority} setPriority={onPriorityChange} />
                     <CardMedia
+                    onClick={() => router.push(`/movie/${film.tmdbId}`)}
                         className='slide'
                         component='img'
                         image={film.posterPath ? `https://image.tmdb.org/t/p/w500/${film.posterPath}` : NoImage.src}

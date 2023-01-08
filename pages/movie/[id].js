@@ -2,15 +2,16 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import axios from 'axios'
 import { useAppContext } from '../../context'
+import { StreamingProviders, MovieHeader, MovieMedia, Cast, MovieInfo } from '../../components'
+import { Typography } from '@mui/material'
 
 const Movie = () => {
 
     const router = useRouter()
-    const [Data, setData] = useState({})
+    const [Data, setData] = useState(null)
     const [AppState] = useAppContext()
 
     useEffect(() => {
-        console.log(router.query)
         const { id } = router.query
         if (id !== undefined) {
             axios.get(`/api/movie/${id}?language=${AppState.language}`).then(res => setData(res.data))
@@ -18,7 +19,20 @@ const Movie = () => {
     }, [router])
 
     return (
-        <p>movie</p>
+        <>
+        {Data ?
+        <>
+        {console.log(Data)}
+        <MovieHeader {...Data.details} />
+        <MovieInfo {...Data.info} />
+        <MovieMedia {...Data.media}/>
+        <StreamingProviders providers={Data.providers} /> 
+        <Cast cast={Data.credits.cast} />
+        </>
+        :
+        <Typography>Loading</Typography>
+        }
+        </>
     )
 
 }
