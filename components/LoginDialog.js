@@ -33,7 +33,12 @@ const LoginDialog = () => {
             setSnackbarState({ message: res.data.text, open: true, error: false })
             setTimeout(() => {
                 setCookies('token', res.data.token)
-                dispatch({ type: "SET_USER", user: { token: res.data.token, name: res.data.name, id: res.data.id } })
+                dispatch({ type: "SET_USER", user: { 
+                    token: res.data.token, 
+                    name: res.data.name, 
+                    id: res.data.id,
+                    providers: res.data.providers
+                } })
             }, 1000)
         }).catch((err) => {
             setSnackbarState({ message: err.response.data.text, open: true, error: true })

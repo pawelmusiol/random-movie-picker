@@ -1,7 +1,8 @@
 const initialValues = {
     name: '',
     token: '',
-    id: ''
+    id: '',
+    providers: [],
 }
 
 const User = (state = initialValues, action) => {
@@ -10,6 +11,9 @@ const User = (state = initialValues, action) => {
             return action.user
         case "CLEAR_USER":
             return initialValues
+        case "SET_PROVIDERS":
+            console.log(action)
+            return {...state, providers: action.providers}
         default:
             return state
     }

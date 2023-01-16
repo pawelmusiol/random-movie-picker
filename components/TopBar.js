@@ -13,7 +13,6 @@ const TopBar = () => {
         { text: 'Lists', href: '/list', auth: true },
     ]
     const User = useSelector(state => state.User)
-    console.log(User)
     return (
         <AppBar component="nav" >
             <Toolbar>

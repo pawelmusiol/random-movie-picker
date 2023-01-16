@@ -5,18 +5,42 @@ import { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { createSelector } from 'reselect'
 import { ListInfo, MoviePicker } from '../../components'
+import { useAppContext } from '../../context'
+import { SimilarFilms } from '../../components'
 
 const SingleList = () => {
     const router = useRouter()
     const dispatch = useDispatch()
-
     const { id } = router.query
+    const [SimilarFilmsData, setSimilarFilmsData] = useState({})
+    const [AppContext] = useAppContext()
+
     const selectListById = createSelector(
         state => state.Lists,
         Lists => Lists.filter(list => list._id === id)
     )
 
     const List = useSelector(selectListById)[0]
+        console.log(List)
+
+    useEffect(() => {
+        if (List) {
+            let data = {
+                films: List.films.map(film => {
+                    return {
+                        id: film.id,
+                        type: film.type,
+                    }
+                }),
+                language: AppContext.language
+            }
+            console.log(data)
+            axios.post(`/api/list/${id}/film/similar`, data).then(res => {
+                setSimilarFilmsData(res.data)
+            })
+        }
+    }, [id, List])
+
 
     console.log(List)
     return (
@@ -24,10 +48,11 @@ const SingleList = () => {
             {List &&
                 <>
                     <ListInfo
-                        
+
                         users={List.users}
                         listInfo={{ _id: List._id, name: List.name }} />
                     <MoviePicker listId={List._id} films={List.films} />
+                    <SimilarFilms movies={SimilarFilmsData}  />
                 </>
             }
 

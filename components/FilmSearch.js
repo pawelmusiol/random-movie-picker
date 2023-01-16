@@ -3,6 +3,7 @@ import { useState, useEffect } from "react"
 import axios from "axios"
 import { useAppContext } from "../context"
 import accents from 'remove-accents'
+import { useDispatch, useSelector } from 'react-redux'
 
 const Types = [
     {
@@ -20,6 +21,21 @@ const useSearch = (Name, Type, Genre, Language, onSearch,) => {
 
 
     const [Error, setError] = useState({ name: false, type: false })
+    const userProviders = useSelector(state => state.User.providers)
+
+    const getProviders = (movies) => {
+        //console.log(userProviders)
+        movies.map(movie => {
+            if (movie.providers !== null && userProviders) {
+                //console.log(movie.providers)
+                movie.providers.forEach((provider) => {
+                    let index = userProviders.findIndex(up => up === provider.provider_id) 
+                    if(index !== -1) movie.providerAvailable = true
+                })
+            }
+        })
+        return movies
+    }
 
     const validateInputs = () => {
         let errors = { name: false, type: false }
@@ -36,24 +52,15 @@ const useSearch = (Name, Type, Genre, Language, onSearch,) => {
 
     const onClick = (Type) => {
         if (validateInputs()) {
-
             let uri = accents.remove(`/api/search?query=${Name}&type=${Type ? Type : 'multi'}&genre=${Genre}&page=1&language=${Language}`)
-            console.log(uri)
             axios.get(uri).then((res) => {
+                res.data.results = getProviders(res.data.results)
+                console.log(res.data.results)
                 onSearch({ ...res.data, type: Type })
             }).catch((err) => console.log(err))
         }
     }
     return [onClick, Error]
-}
-const useGenres = (Language) => {
-    const [GenresList, setGenresList] = useState([])
-    useEffect(() => {
-        axios.get(`/api/getGenres?language=${Language}`).then((res) => {
-            setGenresList(res.data.genres)
-        })
-    }, [])
-    return GenresList
 }
 
 const FilmSearch = ({ onSearch }) => {
@@ -61,13 +68,28 @@ const FilmSearch = ({ onSearch }) => {
     const [Type, setType] = useState("")
 
     const [FilmName, setFilmName] = useState("")
+    const useGenres = (Language) => {
+        const dispatch = useDispatch()
+        const [GenresList, setGenresList] = useState([])
+        useEffect(() => {
+            axios.get(`/api/getGenres?type=${Type}&language=${Language}`).then((res) => {
+                dispatch({ type: 'SET_GENRES', genres: res.data.genres })
+                setGenresList(res.data.genres)
+            })
+        }, [Type])
+        return GenresList
+    }
     const GenresList = useGenres(AppContext.language)
     const [Genre, setGenre] = useState("")
-    const [onClick, Error] = useSearch(FilmName, Type, Genre, AppContext.language, onSearch)
+    const [Search, Error] = useSearch(FilmName, Type, Genre, AppContext.language, onSearch)
+
+    useEffect(() => {
+        Search(Type)
+    }, [FilmName, Type])
 
     return (
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-            <TextField error={Error.name} value={FilmName} onChange={(e) => setFilmName(e.target.value)} label="Name" />
+            <TextField error={Error.name} value={FilmName} onChange={(e) => { setFilmName(e.target.value) }} label="Name" />
             <FormControl error={Error.type} fullWidth>
                 <InputLabel id="search-form-type">Type</InputLabel>
                 <Select value={Type} onChange={e => setType(e.target.value)} label="type" labelId="search-form-type">
@@ -81,7 +103,7 @@ const FilmSearch = ({ onSearch }) => {
                     {GenresList.map((genre, index) => <MenuItem value={genre.id} key={index}>{genre.name}</MenuItem>)}
                 </Select>
             </FormControl>
-            <Button onClick={() => onClick(Type)}>Szukaj</Button>
+            {/* <Button onClick={() => onClick(Type)}>Szukaj</Button> */}
         </Box>
     )
 }

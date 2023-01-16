@@ -17,7 +17,11 @@ const userSchema = new Schema({
     password: {
         type: String,
         required: true,
-    }
+    },
+    providers: [{
+        type: Number,
+        default: [undefined],
+    }]
 })
 
 export default models.User || model('User', userSchema)

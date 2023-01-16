@@ -8,27 +8,27 @@ import { Typography, Grid, Box } from '@mui/material'
 const Movie = () => {
 
     const router = useRouter()
-    const [Data, setData] = useState({ready: false})
+    const [Data, setData] = useState(null)
     const [AppState] = useAppContext()
 
     useEffect(() => {
         const { id } = router.query
         if (id !== undefined) {
-            axios.get(`/api/movie/${id}?language=${AppState.language}&type=movie`).then(res => {
+            axios.get(`/api/movie/${id}?language=${AppState.language}&type=tv`).then(res => {
                 res.data.info.director = res.data.credits.crew.filter(person => person.job === "Director")
                 res.data.details.id = id
-                setData({...res.data, ready: true})
-                
+                setData(res.data)
+
             })
         }
     }, [router])
 
     return (
         <>
-            {Data.ready ?
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                    <MovieHeader {...Data.details} />
-                    <Grid container direction='row' sx={{ justifyContent: 'space-between' }}>
+            {Data ?
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2}}>
+                    <MovieHeader {...Data.details}  />
+                    <Grid container direction='row' sx={{justifyContent: 'space-between'}}>
                         <MovieInfo {...Data.info} poster={Data.media.poster} />
                         <StreamingProviders providers={Data.providers} />
                     </Grid>

@@ -11,8 +11,6 @@ const VoteStars = ({rating}) => {
     let stars = []
 
     for (let i = 0; i < Math.round(rating*2); i+=2) {
-        console.log(i)
-        console.log(Math.round(rating*2))
         if (Math.round(rating*2) - i === 1) {
             stars.push(<SingleStar src={StarHalf.src} />)
         }

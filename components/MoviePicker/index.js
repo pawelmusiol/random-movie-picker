@@ -1,19 +1,29 @@
-import { Box, Card, Grid, CardHeader, CardMedia, IconButton, Button, Dialog, DialogContent, Switch, Typography, Slide, List } from '@mui/material'
+import { Box, Card, Grid, CardHeader, CardMedia, IconButton, Button, Dialog, DialogContent, Switch, Typography, Slide, List, Select } from '@mui/material'
 import { useAppContext } from '../../context'
 import { NoImage } from '../../images'
 import { useEffect, useState, useRef } from 'react'
+import { useDispatch } from 'react-redux'
 import axios from 'axios'
 import SingleMovie from './SingleMovie'
-
+import MovieQueue from './MovieQueue'
 
 
 
 const MoviePicker = ({ listId, films }) => {
+    const dispatch = useDispatch()
     const refs = useRef([])
     const [SelectedFilms, setSelectedFilms] = useState([])
+    const [Queue, setQueue] = useState([])
+    const [AppState] = useAppContext()
     useEffect(() => {
         refs.current = refs.current.slice(0, films.length)
-    }, [])
+    }, [films])
+
+    useEffect(() => {
+        axios.get(`/api/list/${listId}/film/queue?language=${AppState.language}`).then(res => {
+            setQueue(res.data)
+        })
+    },[listId])
 
     const selectFilm = (film) => {
         if (!(SelectedFilms.filter(e => e._id === film._id) > 0)) {
@@ -35,16 +45,24 @@ const MoviePicker = ({ listId, films }) => {
             return x
         })
     }
+
+    const deleteFilm = (id) => {
+        axios.delete(`/api/list/${listId}/film/${id}`).then(res => {
+            console.log(res.data)
+            dispatch({ type: 'UPDATE_LIST', list: res.data })
+        })
+    }
+
     const switchAllFilms = (e) => {
         console.log(e.target.checked)
         refs.current.forEach((input, i) => {
             setTimeout(() => {
                 if(e.target.checked){
-                    if (!input.checked) {
+                    if (input && !input.checked) {
                         input.click()
                     }
                 }
-                else if(!e.target.checked){
+                else if(input && !e.target.checked){
                     if (input.checked) {
                         input.click()
                     }
@@ -53,20 +71,40 @@ const MoviePicker = ({ listId, films }) => {
         })
     }
 
+    const addToQueue = (film) => {
+        console.log(film)
+        let modifiedFilm = {
+            id: film.tmdbId,
+            name: film.name,
+            type: film.type,
+        }
+        axios.post(`/api/list/${listId}/film/queue?language=${AppState.language}`,{film: modifiedFilm}).then(res => {
+            console.log(res.data)
+            setQueue(res.data)
+        })
+    }
+    const RemoveFromQueue = (id) => {
+        axios.delete(`/api/list/${listId}/film/queue?filmId=${id}&language=${AppState.language}`).then(res => {
+            console.log(res.data)
+            setQueue(res.data)
+        })
+    }
+
     return (
         <Box>
+            <MovieQueue movies={Queue} onDelete={RemoveFromQueue}/>
             <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                 <Box>
                     <Typography>Select All Films</Typography><Switch onChange={switchAllFilms} />
                 </Box>
-                <Picker selectedFilms={SelectedFilms} />
+                <Picker addToQueue={addToQueue} selectedFilms={SelectedFilms} />
             </Box>
-            <Films listId={listId}  refs={refs} films={films} actions={{ selectFilm: selectFilm, deselectFilm: deselectFilm, changePriority: changePriority }} />
+            <Films listId={listId}  refs={refs} films={films} actions={{ selectFilm: selectFilm, deselectFilm: deselectFilm, changePriority: changePriority, deleteFilm: deleteFilm, }} />
         </Box>
     )
 }
 
-const Picker = ({ selectedFilms }) => {
+const Picker = ({ selectedFilms, addToQueue }) => {
 
     
 
@@ -119,7 +157,7 @@ const Picker = ({ selectedFilms }) => {
                         return {
                             left: { sx: { ...Films.left.sx, transform: 'scale(.5)' }, film: FilmsToChoose[Math.floor(Math.random() * FilmsToChoose.length)] },
                             main: { sx: { ...Films.main.sx, transform: 'scale(1.2)' }, film: Films.left.film },
-                            right: { sx: { ...Films.right.sx, transform: 'scale(.5)' }, film: Films.left.film },
+                            right: { sx: { ...Films.right.sx, transform: 'scale(.5)' }, film: Films.main.film },
                         }
                     })
                 }
@@ -142,12 +180,15 @@ const Picker = ({ selectedFilms }) => {
             <Dialog
                 onClick={e => {
                     if (!['left-film', 'main-film', 'right-film'].includes(e.target.parentNode.id)) {
+                        addToQueue(SelectedFilm.main.film)
                         setDialogOpen(false)
                     }
                 }
                 }
                 open={DialogOpen}
-                onClose={() => setDialogOpen(false)}
+                onClose={() => {
+                    addToQueue(SelectedFilm.main.film)
+                    setDialogOpen(false)}}
                 PaperProps={{
                     style: {
                         backgroundColor: 'transparent',

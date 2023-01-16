@@ -31,10 +31,8 @@ const CreateList = () => {
     const User = useSelector(state => state.User)
 
     const handleSubmit = () => {
-        console.log(User)
         if(User)
         axios.post('/api/list', {...FormData, userId: User.id}).then(res => {
-            console.log(res)
             setSnackbarState({open: true, message: res.data.text});
             dispatch({ type: 'SET_LISTS', lists: res.data.lists})
             setOpen(false)

@@ -1,12 +1,14 @@
 import axios from 'axios'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
+import { ProvidersSubscriptions } from '../../components'
+import { useSelector } from 'react-redux'
 
 const UserPage = () => {
 
-    const [UserData, setUserData] = useState({ ready: false })
-    const router = useRouter()
-    useEffect(() => {
+    //const [UserData, setUserData] = useState({ ready: false })
+    const user = useSelector(state => state.User)
+    /* useEffect(() => {
         if (router.query.id) {
             axios.get(`/api/user/${router.query.id}`).then(res => {
                 setUserData({ ...res.data, ready: true })
@@ -15,18 +17,13 @@ const UserPage = () => {
                 setUserData({ ready: false, error: true })
             })
         }
-    }, [router.query.id])
-
+    }, [router.query.id]) */
 
 
     return (
         <>
-            {(UserData.ready && !UserData.error) ?
-                <>user</>
-                :
-                <>Brak Danych</>
-            }
-            {UserData.error && <>Błąd</>}
+            <ProvidersSubscriptions id={user.id} providers={user.providers} />
+
         </>
     )
 }

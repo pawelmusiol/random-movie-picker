@@ -1,49 +1,35 @@
-import { Box, styled, Typography } from '@mui/material'
+import { Box, styled, Paper, Typography, Grid } from '@mui/material'
 
 const ProviderImage = styled('img')({
-    height: 100
+    height: 60,
+    borderRadius: '22% 22% 0 0'
 })
 
-const ProvidersLine = styled(Box)({
-    display: 'flex',
-    maxWidth: '100vw'
 
-})
-
-const StreamingProviders = ({providers}) => {
+const SingleProvider = ({ types, src }) => {
     return (
-        <Box>
+        <Grid item>
+            <Paper sx={{ height: 120, width: 60, borderRadius: '12px' }}>
+                <ProviderImage src={src} />
+                {types.map((type, i) =>
+                    <Typography key={`type-${i}`} sx={{ textAlign: 'center' }}>{type}</Typography>
+                )}
+            </Paper>
+        </Grid>
+    )
+}
+
+const StreamingProviders = ({ providers }) => {
+    return (
+        <Grid item xs={3}>
             {providers ?
-            <>
-            {providers.buy &&
-                <ProvidersLine>
-                    <Typography>Buy</Typography>
-                    {providers.buy.map(provider => <ProviderImage src={"https://image.tmdb.org/t/p/w500/" + provider.logo_path} />)}
-                </ProvidersLine>
+                <Grid container sx={{justifyContent: 'flex-start', gap: 2}}>
+                    {providers.map((provider,i) => <SingleProvider key={`provider-${i}`} src={"https://image.tmdb.org/t/p/w500/" + provider.logo_path} types={provider.types} />)}
+                </Grid>
+                :
+                <Typography>No Providers</Typography>
             }
-            {providers.flatrate &&
-                <ProvidersLine>
-                <Typography>Streaming</Typography>
-                    {providers.flatrate.map(provider => <ProviderImage src={"https://image.tmdb.org/t/p/w500/" + provider.logo_path} />)}
-                </ProvidersLine>
-            }
-            {providers.rent && 
-                <ProvidersLine>
-                <Typography>Rent</Typography>
-                    {providers.rent.map(provider => <ProviderImage src={"https://image.tmdb.org/t/p/w500/" + provider.logo_path} />)}
-                </ProvidersLine>
-            }
-            {providers.free && 
-                <ProvidersLine>
-                <Typography>Free</Typography>
-                    {providers.free.map(provider => <ProviderImage src={"https://image.tmdb.org/t/p/w500/" + provider.logo_path} />)}
-                </ProvidersLine>
-            }
-            </>
-            :
-            <Typography>No Providers</Typography>
-            }
-        </Box>
+        </Grid>
     )
 }
 

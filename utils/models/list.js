@@ -11,6 +11,21 @@ const shortUser = {
     }
 }
 
+const film = {
+    id: {
+        type: Number,
+        required: true,
+    },
+    name: {
+        type: String,
+        required: true,
+    },
+    type: {
+        type: String,
+        required: true,
+    },
+}
+
 const listSchema = new Schema({
     name: {
         type: String,
@@ -23,7 +38,7 @@ const listSchema = new Schema({
     },
     users: [{
         ...shortUser,
-        isOwner:{
+        isOwner: {
             type: Boolean,
             required: true,
             default: false,
@@ -43,20 +58,10 @@ const listSchema = new Schema({
         }
     }],
     films: [{
-        id: {
-            type: Number,
-            required: true,
-        },
-        name: {
-            type: String,
-            required: true,
-        },
-        type: {
-            type: String,
-            required: true,
-        },
+        ...film,
         addedBy: shortUser
-    }]
+    }],
+    queue: [film]
 })
 
 

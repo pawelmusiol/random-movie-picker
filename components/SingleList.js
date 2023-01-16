@@ -88,7 +88,6 @@ const ListedUsers = ({ icon, list }) => {
         <List sx={{ display: 'flex', flexDirection: 'row', padding: 0 }}>
             {list.map((item, i) => (
                 <ListItem key={i} sx={{ maxWidth: 30 }} >
-                    {console.log(i)}
                     <ListItemAvatar sx={{ minWidth: 0 }}>
                         <Avatar sx={{ backgroundColor: avatarColor() }}>
                             {item.name.charAt(0).toUpperCase()}

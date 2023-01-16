@@ -1,5 +1,5 @@
-import dbConnect from "../../../utils/DbConnent"
-import userModel from "../../../utils/models/user"
+import dbConnect from "../../../../utils/DbConnent"
+import userModel from "../../../../utils/models/user"
 import bcrypt from 'bcrypt'
 
 export default async function handler(req, res) {
@@ -14,8 +14,7 @@ export default async function handler(req, res) {
         case "GET":
             try {
                 let user = await userModel.findById(query.id)
-                console.log(user)
-                res.status(200).send({ name: user.name, email: user.email })
+                res.status(200).send({ name: user.name, email: user.email, providers: user.providers })
                 break;
             } catch (err) {
                 res.status(404).send({text: "User not found"})

@@ -24,18 +24,13 @@ const DeleteImage = styled('img')(({ theme, color }) => ({
     maxWidth: 32,
 }))
 
-const SingleFilm = ({ film, width, selectFilm, changePriority, deselectFilm, sx, inputRef, listId, id = undefined, noAction = false }) => {
+const SingleFilm = ({ film, width, selectFilm, changePriority, deleteFilm, deselectFilm, sx, inputRef, listId, id = undefined, noAction = false }) => {
 
     const router = useRouter()
     const cardRef = useRef(null)
     const [Priority, setPriority] = useState(1)
-    const dispatch = useDispatch()
-    const deleteFilm = () => {
-        axios.delete(`/api/list/${listId}/film/${film._id}`).then(res => {
-            console.log(res.data)
-            dispatch({ type: 'UPDATE_LIST', list: res.data })
-        })
-    }
+    
+    
 
     const changeFilmState = (e) => {
         film.priority = Priority
@@ -60,13 +55,13 @@ const SingleFilm = ({ film, width, selectFilm, changePriority, deselectFilm, sx,
                         action={!noAction &&
                             <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                                 <IconButton>
-                                    <DeleteImage src={Delete.src} onClick={deleteFilm} />
+                                    <DeleteImage src={Delete.src} onClick={() => deleteFilm(film._id)} />
                                 </IconButton>
-                                <Switch inputRef={inputRef} onChange={changeFilmState} />
+                                {selectFilm && <Switch inputRef={inputRef} onChange={changeFilmState} />}
 
                             </Box>}
                     />
-                    <PriorityGroup Priority={Priority} setPriority={onPriorityChange} />
+                    {selectFilm && <PriorityGroup Priority={Priority} setPriority={onPriorityChange} />}
                     <CardMedia
                     onClick={() => router.push(`/movie/${film.tmdbId}`)}
                         className='slide'

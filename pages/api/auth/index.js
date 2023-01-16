@@ -11,15 +11,15 @@ const handler = async (req, res) => {
     switch (method) {
         case 'POST':
             const user = await getPassword(body.login)
-            console.log(await userModel.find())
-            console.log(user)
             if (!user) {
                 res.status(401).send({ text: "Invalid Login" })
                 break
             }
             if (await CheckPassword(body.password, user.password)) {
+                let userData = await getUserData(user._id)
+                console.log(userData)
                 let token = jwt.sign({ id: user._id, exp: Math.floor(Date.now() + (1000 * 60 * 60)) }, 'dupa',)
-                res.status(200).send({ token: token, text: "Logged in successfully", name: body.login, id: user._id })
+                res.status(200).send({ token: token, text: "Logged in successfully", name: userData.name, id: user._id, providers: userData.providers })
             }
             else {
                 res.status(401).send({ text: "Invalid Password" })
@@ -33,20 +33,20 @@ const handler = async (req, res) => {
                 if (Date.now() > verifiedToken.exp) {
                     res.status(401).send({ text: "Token Expired", code: 4 })
                 }
-                else if(Date.now() < verifiedToken.exp){
-                    let name = (await getName(verifiedToken.id)).name
-                    res.status(200).send({text: "Token Active", code: 1, name: name, id: verifiedToken.id })
+                else if (Date.now() < verifiedToken.exp) {
+                    let data = (await getUserData(verifiedToken.id))
+                    res.status(200).send({ text: "Token Active", code: 1, name: data.name, id: verifiedToken.id, providers: data.providers })
                 }
             } catch (error) {
                 console.log(error)
                 res.status(401).send({ text: "Not Logged" })
             }
             break;
-        }
+    }
 }
 
-const getName = async (id) => {
-    return await userModel.findById(id, 'name')
+const getUserData = async (id) => {
+    return await userModel.findById(id, 'name providers')
 }
 
 const getPassword = async (name) => {

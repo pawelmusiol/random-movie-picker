@@ -49,7 +49,8 @@ const MainLayout = ({ children }) => {
     useEffect(() => {
         if (cookies.token) {
             axios.get(`/api/auth?token=${cookies.token}`).then(res => {
-                dispatch({ type: 'SET_USER', user: { token: cookies.token, name: res.data.name, id: res.data.id } })
+                console.log(res.data)
+                dispatch({ type: 'SET_USER', user: { token: cookies.token, name: res.data.name, id: res.data.id, providers: res.data.providers } })
             }).catch(err => {
                 if (err.response.status === 401) removeCookie('token')
                 dispatch({ type: 'CLEAR_USER' })

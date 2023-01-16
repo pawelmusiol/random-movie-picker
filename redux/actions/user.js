@@ -9,3 +9,10 @@ export const clearUser = () => {
         type: 'CLEAR_USER'
     }
 }
+
+export const setProviders = (providers) => {
+    return {
+        type: 'SET_PROVIDERS',
+        providers
+    }
+}
