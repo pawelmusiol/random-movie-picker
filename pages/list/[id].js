@@ -21,7 +21,6 @@ const SingleList = () => {
     )
 
     const List = useSelector(selectListById)[0]
-        console.log(List)
 
     useEffect(() => {
         if (List) {
@@ -34,7 +33,6 @@ const SingleList = () => {
                 }),
                 language: AppContext.language
             }
-            console.log(data)
             axios.post(`/api/list/${id}/film/similar`, data).then(res => {
                 setSimilarFilmsData(res.data)
             })
@@ -42,7 +40,6 @@ const SingleList = () => {
     }, [id, List])
 
 
-    console.log(List)
     return (
         <Box>
             {List &&

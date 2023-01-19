@@ -4,12 +4,12 @@ import axios from "axios"
 export default async function handler(req, res) {
     const { method, query } = req
 
-    console.log(query)
 
     await dbConnect()
 
     switch (method) {
         case "GET":
+            console.log(query)
             let data = {
                 providers: await getProviders(query.id, query.language, query.type),
                 ...(await getDetails(query.id, query.language, query.type)),
@@ -27,7 +27,7 @@ export default async function handler(req, res) {
 
 const getSimilar = async (id, language, type) => {
     let similarMovies = (await axios.get(`https://api.themoviedb.org/3/${type}/${id}/recommendations?language=${language}&api_key=${process.env.TMDB_API_KEY}`)).data
-    let results =[]
+    let results = []
     for (let i = 0; i < similarMovies.results.length; i++) {
         results.push({
             name: type === 'tv' ? similarMovies.results[i].name : similarMovies.results[i].title,
@@ -51,7 +51,6 @@ export const getProviders = async (id, language, type) => {
     for (const key in providers) {
         providers[key].forEach(singleProvider => {
             let index = combinedProviders.findIndex(sp => sp.provider_name === singleProvider.provider_name)
-            console.log(singleProvider)
             if (index !== -1) {
                 combinedProviders[index].types = [...combinedProviders[index].types, key]
             }

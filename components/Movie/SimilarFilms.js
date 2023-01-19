@@ -15,9 +15,9 @@ const MovieGrid = styled(Grid)({
 
 const TextBox = styled(Box)({
     transition: '.3s',
-    opacity:0,
-    top:8,
-    left:8,
+    opacity: 0,
+    top: 8,
+    left: 8,
     height: 'calc(100% - 16px)',
     width: 'calc(100% - 8px)',
     position: 'absolute',
@@ -29,28 +29,30 @@ const TextBox = styled(Box)({
 })
 
 const SimilarFilms = ({ movies }) => {
-    
+
     const router = useRouter()
 
     return (
         <>
-            <Typography>Similar Films</Typography>
-            {movies.length &&
-                <Grid container spacing={1}  >
-                    {movies.map((movie, i) =>
-                        <MovieGrid 
-                        item 
-                        xs={2} 
-                        sx={{cursor: 'pointer'}}
-                        key={`similar-film-${i}`}
-                        onClick={() => router.push(`/${movie.mediaType}/${movie.id}`)}
-                        >
-                            <Image src={"https://image.tmdb.org/t/p/w500" + movie.poster} />
-                            <TextBox>
-                                <Typography>{movie.name}</Typography>
-                            </TextBox>
-                        </MovieGrid>)}
-                </Grid>
+            {movies.length ?
+                <>
+                    <Typography>Similar Films</Typography>
+                    <Grid container spacing={1}  >
+                        {movies.map((movie, i) =>
+                            <MovieGrid
+                                item
+                                xs={2}
+                                sx={{ cursor: 'pointer' }}
+                                key={`similar-film-${i}`}
+                                onClick={() => router.push(`/${movie.mediaType}/${movie.id}`)}
+                            >
+                                <Image src={"https://image.tmdb.org/t/p/w500" + movie.poster} />
+                                <TextBox>
+                                    <Typography>{movie.name}</Typography>
+                                </TextBox>
+                            </MovieGrid>)}
+                    </Grid>
+                </> : <></>
             }
         </>
     )

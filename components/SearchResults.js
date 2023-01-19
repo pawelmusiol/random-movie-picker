@@ -10,6 +10,7 @@ const SearchResult = ({ results, type }) => {
     lists = lists.filter(list => list.name !== '')
         .map(list => { return { name: list.name, _id: list._id } })
     const getGenre = (result) => {
+        console.log(result.genre_ids)
         if(result.genre_ids.length){
             return genres.find(genre => genre.id === result.genre_ids[0]).name
         }

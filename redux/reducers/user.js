@@ -12,7 +12,6 @@ const User = (state = initialValues, action) => {
         case "CLEAR_USER":
             return initialValues
         case "SET_PROVIDERS":
-            console.log(action)
             return {...state, providers: action.providers}
         default:
             return state

@@ -10,6 +10,7 @@ const TopBar = () => {
     const Pages = [
         { text: 'Start', href: '/' },
         { text: 'Search', href: '/search' },
+        { text: 'Discover', href: '/discover' },
         { text: 'Lists', href: '/list', auth: true },
     ]
     const User = useSelector(state => state.User)

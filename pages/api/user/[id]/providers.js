@@ -38,7 +38,6 @@ const addProvider = async (id, provider) => {
 
 const getUserProviders = async (id) => {
     let userProviders = await userModel.findById(id, 'providers')
-    console.log(userProviders)
     return userProviders.providers
 }
 

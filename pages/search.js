@@ -1,23 +1,23 @@
 import { useState, useEffect } from "react";
 import { FilmSearch, SearchResults, ResultPagination } from "../components";
-import { useSelector } from "react-redux";
+import { useAppContext } from "../context";
 import axios from "axios";
 
 
 const Search = () => {
     const [Results, setResults] = useState({})
     const [Page, setPage] = useState(1)
-    console.log(Page)
-    
+    const [AppState] = useAppContext()
+
     useEffect(() => {
-        axios.get(Results.url + Page).then(result => {
+        axios.get(Results.url + Page + '&language=' + AppState.language).then(result => {
             console.log(result);
-            setResults(result.data);
+            setResults({ ...result.data, type: Results.type });
         })
     }, [Page])
 
     const handleSearch = e => {
-        setResults(e) 
+        setResults(e)
         setPage(e.page)
     }
 

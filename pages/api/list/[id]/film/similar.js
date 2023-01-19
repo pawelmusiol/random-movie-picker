@@ -18,7 +18,6 @@ const getSimilarMovies = async (films, language) => {
     let result = await Promise.all(films.map(async (movie) => {
         let movieResult = (await axios.get(`https://api.themoviedb.org/3/${movie.type}/${movie.id}/recommendations?api_key=${process.env.TMDB_API_KEY}&language=${language}`)).data
         if (movieResult.results[0]) {
-            console.log(movieResult.results[0])
             return {
                 name: movieResult.results[0].title ? movieResult.results[0].title : movieResult.results[0].name,
                 poster: movieResult.results[0].poster_path,
