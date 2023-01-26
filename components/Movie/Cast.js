@@ -34,9 +34,9 @@ const Cast = ({ cast }) => {
             {cast.length ?
                 <>
                     <Typography>Cast</Typography>
-                    <Grid container spacing={8}>
+                    <Grid container spacing={8} sx={{justifyContent: 'space-between'}}>
                         {CastSplited.main.map((person, i) =>
-                            <Grid key={`cast-${i}`} item xs={2} sx={{ display: 'flex', flexDirection: 'column', }}>
+                            <Grid key={`cast-${i}`} item xs={4} md={2} sx={{ display: 'flex', flexDirection: 'column' }}>
                                 <CastImg src={"https://image.tmdb.org/t/p/w500" + person.profile_path} />
                                 <Typography>{person.character}</Typography>
                                 <Typography>{person.name}</Typography>

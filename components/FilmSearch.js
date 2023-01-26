@@ -71,25 +71,27 @@ const useSearch = (Name, Type, Genre, Language, onSearch,) => {
     return [onClick, Error]
 }
 
+export const useGenres = (Language, Type) => {
+    const dispatch = useDispatch()
+    const [GenresList, setGenresList] = useState([])
+    useEffect(() => {
+        axios.get(`/api/getGenres?type=${Type}&language=${Language}`).then((res) => {
+            dispatch({ type: 'SET_GENRES', genres: res.data.genres })
+            setGenresList(res.data.genres)
+        })
+    }, [Type])
+    return GenresList
+}
+
 const FilmSearch = ({ onSearch }) => {
     const router = useRouter()
     const [AppContext, setAppContext] = useAppContext()
     const [Type, setType] = useState("movie")
 
     const [FilmName, setFilmName] = useState(router.query.name)
-    const useGenres = (Language) => {
-        const dispatch = useDispatch()
-        const [GenresList, setGenresList] = useState([])
-        useEffect(() => {
-            axios.get(`/api/getGenres?type=${Type}&language=${Language}`).then((res) => {
-                dispatch({ type: 'SET_GENRES', genres: res.data.genres })
-                setGenresList(res.data.genres)
-            })
-        }, [Type])
-        return GenresList
-    }
+    
 
-    const GenresList = useGenres(AppContext.language)
+    const GenresList = useGenres(AppContext.language, Type)
     const [Genre, setGenre] = useState("")
     const [Search, Error] = useSearch(FilmName, Type, Genre, AppContext.language, onSearch)
 

@@ -1,4 +1,4 @@
-import { AppBar, Typography, Toolbar, Box, Menu, MenuItem, Button } from '@mui/material'
+import { AppBar, Typography, Toolbar, Box, Menu, MenuItem, Button, useTheme, useMediaQuery } from '@mui/material'
 import { MenuButton, LoginDialog } from '.'
 import { useSelector, useDispatch } from 'react-redux'
 import { useRouter } from 'next/router'
@@ -7,6 +7,7 @@ import { useCookies } from 'react-cookie'
 import axios from 'axios'
 
 const TopBar = () => {
+    const theme = useTheme()
     const Pages = [
         { text: 'Start', href: '/' },
         { text: 'Search', href: '/search' },
@@ -14,9 +15,12 @@ const TopBar = () => {
         { text: 'Lists', href: '/list', auth: true },
     ]
     const User = useSelector(state => state.User)
+    console.log(theme.breakpoints.up('md'))
     return (
         <AppBar component="nav" >
             <Toolbar>
+                {useMediaQuery(theme.breakpoints.up('md')) ? 
+                <>
                 <Box sx={{ flexGrow: 1, flexDirection: 'row', display: "flex" }} >
                     {Pages.map(page => {
                         if (!page.auth) {
@@ -33,6 +37,10 @@ const TopBar = () => {
                         : <UserMenu user={User} />
                     }
                 </Box>
+                </>
+: 
+<></>
+}
             </Toolbar>
         </AppBar>
     )

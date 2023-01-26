@@ -28,7 +28,10 @@ const MainBox = styled(Box)(({ theme }) => ({
         '&:hover': {
             backgroundColor: '#777',
         }
-    }
+    },
+    [theme.breakpoints.down('md')]: {
+        flexDirection: 'column',
+        }
 }))
 
 const Circle = styled(Box)(({ theme, pos, size }) => ({

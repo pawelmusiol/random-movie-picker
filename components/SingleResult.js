@@ -17,7 +17,7 @@ const IMG = styled('img')({
 const SingleResult = ({ id, genre, posterPath, providerAvailable, voteAverage, type, title, lists }) => {
     const user = useSelector(state => state.User)
     return (
-        <Grid item sx={{ minHeight: '100%' }} xs={3}>
+        <Grid item sx={{ minHeight: '100%' }} xs={12} md={3}>
 
             <Card sx={{ minHeight: '100%', backgroundColor: providerAvailable ? 'green': 'unset', height: '100%' }}>
                 <Grid container sx={{flexDirection: 'column', justifyContent: 'space-between', flexWrap: 'no-wrap', height: '100%'  }}>

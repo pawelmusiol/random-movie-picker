@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react'
-import { OutlinedInput, FormControl, Box, Select, MenuItem, InputLabel, Checkbox, FormControlLabel } from "@mui/material";
+import { Button, FormControl, Box, Select, MenuItem, InputLabel, Checkbox, FormControlLabel, Autocomplete, TextField } from "@mui/material";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { useAppContext } from '../../context';
-
+import { useGenres } from '../FilmSearch';
 const Types = [
     {
         value: 'movie',
@@ -28,15 +28,39 @@ const useYears = () => {
     return Years
 }
 
-const useProviders = () => {
-    const [AppContext] = useAppContext()
+const useProviders = (language) => {
+    const UserProviders = useSelector(state => state.User.providers)
+    const [ProvidersArray, setProvidersArray] = useState([])
     const [Providers, setProviders] = useState([])
+    console.log(Providers)
     useEffect(()=> {
-        axios.get(`/api/user/1/providers?language=${AppContext.language}`).then(res => {
-            setProviders(res.data.availableProviders)
+        axios.get(`/api/user/1/providers?language=${language}`).then(res => {
+            setProvidersArray(res.data.availableProviders)
         })
     },[])
-    return Providers
+    useEffect(() => {
+        if(UserProviders.length && ProvidersArray.length)
+        setProviders(UserProviders.map(Up => {
+            return ProvidersArray.find(Pa => Pa.id === Up)
+        }))
+    },[UserProviders, ProvidersArray])
+
+    return [Providers, setProviders, ProvidersArray]
+}
+
+const useCast = (language) => {
+    const [Text, setText] = useState('')
+    const [CastArray, setCastArray] = useState([{id: 0, name: 'd'}])
+    const [SelectedCast, setSelectedCast] = useState([])
+
+    useEffect(() => {
+        if(Text.length)
+        axios.get(`/api/cast?language=${language}&query=${Text}`).then(res => {
+            setCastArray([...SelectedCast, ...res.data])
+        })
+
+    },[Text])
+    return [CastArray, SelectedCast, setSelectedCast, setText]
 }
 
 /*
@@ -48,21 +72,28 @@ obsada
 watch providers
 */
 const SearchForm = ({ }) => {
-
+    const [AppContext] = useAppContext()
     const [Type, setType] = useState('movie')
     const [Genre, setGenre] = useState(0)
     const [SafeSearch, setSafeSearch] = useState(false)
     const [Years, setYears] = useState({ from: 2020, to: 2023 })
-    const [Providers, setProviders] = useState([])
     const YearsArray = useYears()
-    const ProvidersArray = useProviders()
+    const [Providers, setProviders, ProvidersArray] = useProviders(AppContext.language)
+    const [CastArray, SelectedCast, setSelectedCast, setText] = useCast(AppContext.language)
 
-    const Genres = useSelector(state => state.Genres)
+    const Genres = useGenres(AppContext.language, Type)
 
-    const onMultipleChange = (Values, setValue, value) => {
-        let index = Values.findIndex(val => val === value)
-        if(index === -1) setValue(value)
-        else Values.splice(index, 1)
+    console.log(Providers)
+
+    const onSearch = () => {
+        console.log({
+            Type:Type,
+            Genre: Genre,
+            SafeSearch: SafeSearch,
+            Years: Years,
+            Providers: Providers,
+            Cast: SelectedCast,
+        })
     }
 
     return (
@@ -114,19 +145,45 @@ const SearchForm = ({ }) => {
                 </Select>
             </FormControl>
             <FormControl>
-                <InputLabel id="search-form-providers">Providers</InputLabel>
-                <Select
+                {/* <InputLabel id="search-form-providers">Providers</InputLabel> */}
+                <Autocomplete
                     value={Providers}
-                    onChange={e => onMultipleChange(Providers,setProviders, e.target.value)}
-                    label="Providers"
-                    labelId="search-form-providers"
+                    onChange={(event, newValues) => setProviders(newValues)}
+                    //labelId="search-form-providers"
                     multiple
-                    input={<OutlinedInput label="Providers"/>}
-                >
-                    {ProvidersArray.map((provider, i) => <MenuItem key={`from-${i}`} value={provider.id}>{provider.name}</MenuItem>)}
-                </Select>
+                    options={ProvidersArray}
+                    getOptionLabel={option => option.name}
+                    filterSelectedOptions
+                    renderInput={(params) => (
+                    <TextField 
+                    {...params}
+                    label="Providers"
+                    placeholder="Providers"
+                    />
+                    )}
+                />
             </FormControl>
-            
+            <FormControl>
+                {/* <InputLabel id="search-form-providers">Providers</InputLabel> */}
+                <Autocomplete
+                    value={SelectedCast}
+                    onChange={(event, newValues) => setSelectedCast(newValues)}
+                    //labelId="search-form-providers"
+                    multiple
+                    options={CastArray}
+                    getOptionLabel={option => option.name}
+                    filterSelectedOptions
+                    renderInput={(params) => (
+                    <TextField
+                    onChange={e => setText(e.target.value)}
+                    {...params}
+                    label="Cast"
+                    placeholder="Cast"
+                    />
+                    )}
+                />
+            </FormControl>
+            <Button onClick={onSearch}>Search</Button>
         </Box>
     )
 }

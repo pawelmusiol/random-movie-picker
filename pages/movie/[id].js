@@ -26,7 +26,7 @@ const Movie = () => {
     return (
         <>
             {Data.ready ?
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                <Box sx={{ width: '100vw', display: 'flex', flexDirection: 'column', gap: 2, }}>
                     <MovieHeader {...Data.details} />
                     <Grid container direction='row' sx={{ justifyContent: 'space-between' }}>
                         <MovieInfo {...Data.info} poster={Data.media.poster} />
