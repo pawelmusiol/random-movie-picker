@@ -19,31 +19,26 @@ const TopBar = () => {
     return (
         <AppBar component="nav" >
             <Toolbar>
-                {useMediaQuery(theme.breakpoints.up('md')) ? 
-                <>
-                <Box sx={{ flexGrow: 1, flexDirection: 'row', display: "flex" }} >
-                    {Pages.map(page => {
-                        if (!page.auth) {
-                            return <MenuButton href={page.href} key={page.href}>{page.text}</MenuButton>
+                    <Box sx={{ flexGrow: 1, flexDirection: 'row', display: "flex" }} >
+                        {Pages.map(page => {
+                            if (!page.auth) {
+                                return <MenuButton href={page.href} key={page.href}>{page.text}</MenuButton>
+                            }
+                            else {
+                                if (User.name) return <MenuButton href={page.href} key={page.href}>{page.text}</MenuButton>
+                            }
+                        })}
+                    </Box>
+                    <Box sx={{ flexGrow: 0 }}>
+                        {User.name === ''
+                            ? <LoginDialog />
+                            : <UserMenu user={User} />
                         }
-                        else {
-                            if (User.name) return <MenuButton href={page.href} key={page.href}>{page.text}</MenuButton>
-                        }
-                    })}
-                </Box>
-                <Box sx={{ flexGrow: 0 }}>
-                    {User.name === ''
-                        ? <LoginDialog />
-                        : <UserMenu user={User} />
-                    }
-                </Box>
-                </>
-: 
-<></>
-}
+                    </Box>
             </Toolbar>
         </AppBar>
     )
+                
 }
 
 const UserMenu = ({ user }) => {

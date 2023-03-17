@@ -9,11 +9,29 @@ const Poster = styled('img')({
     marginRight: 10,
 })
 
+const Overwiev = styled(Typography)({
+    textOverflow: 'ellipsis',
+    overflow: 'hidden',
+    display: '-webkit-box',
+    '-webkit-box-orient': 'vertical',
+    '-webkit-line-clamp': '3', /* limit to 2 lines */
+})
+
+const GenresList = styled(Box)(({ theme }) => ({
+    display: 'flex',
+    flexDirection: 'row',
+    gap: 2,
+    marginBottom: 5,
+    /* [theme.breakpoints.down('md')]: {
+        flexDirection: 'column',
+    } */
+}))
+
 const Info = ({ overview, budget, genres, revenue, poster, firstEpisode, lastEpisode, inProduction }) => {
 
     const router = useRouter()
 
-    const shortOverview = useMemo(() => {
+    /* const shortOverview = useMemo(() => {
         let short = overview.split('.')[0] + '.'
         if (short.split(' ').length > 20) {
             short = short.split(' ').map((word, i) => {
@@ -21,26 +39,26 @@ const Info = ({ overview, budget, genres, revenue, poster, firstEpisode, lastEpi
             })
         }
         return short
-    }, [overview])
+    }, [overview]) */
 
     console.log(poster)
 
     return (
         <Grid container spacing={2} xs={9} direction='row'>
-            <Grid item xs={6} sx={{ display: 'flex' }}>
+            <Grid item md={6} sx={{ display: 'flex' }}>
                 {poster &&
                     <Poster src={"https://image.tmdb.org/t/p/w500" + poster.file_path} />
                 }
-                <Typography>{shortOverview}...</Typography>
+                <Overwiev >{overview}...</Overwiev>
             </Grid>
-            <Grid item xs={6}>
+            <Grid item md={6}>
                 {router.pathname.includes('/movie') && <MovieInfo budget={budget} revenue={revenue} />}
                 {router.pathname.includes('/tv') && <TvInfo firstEpisode={firstEpisode} lastEpisode={lastEpisode} inProduction={inProduction} />}
-                <Box sx={{ display: 'flex', flexDirection: 'row', gap: 2 }}>
+                <GenresList>
                     {genres.map((genre, i) => <Paper key={'genre-' + i} sx={{ padding: 1 }}>
                         <Typography>{genre.name}</Typography>
                     </Paper>)}
-                </Box>
+                </GenresList>
             </Grid>
 
         </Grid>

@@ -19,7 +19,7 @@ const handler = async (req, res) => {
                 let userData = await getUserData(user._id)
                 console.log(userData)
                 let token = jwt.sign({ id: user._id, exp: Math.floor(Date.now() + (1000 * 60 * 60)) }, 'dupa',)
-                res.status(200).send({ token: token, text: "Logged in successfully", name: userData.name, id: user._id, providers: userData.providers })
+                res.status(200).send({ token: token, text: "Logged in successfully", name: userData.name, id: user._id, providers: userData.providers, favourite: userData.favourite })
             }
             else {
                 res.status(401).send({ text: "Invalid Password" })
@@ -35,7 +35,8 @@ const handler = async (req, res) => {
                 }
                 else if (Date.now() < verifiedToken.exp) {
                     let data = (await getUserData(verifiedToken.id))
-                    res.status(200).send({ text: "Token Active", code: 1, name: data.name, id: verifiedToken.id, providers: data.providers })
+                    console.log(data)
+                    res.status(200).send({ text: "Token Active", code: 1, name: data.name, id: verifiedToken.id, providers: data.providers, favourite: data.favourite })
                 }
             } catch (error) {
                 console.log(error)
@@ -46,7 +47,8 @@ const handler = async (req, res) => {
 }
 
 const getUserData = async (id) => {
-    return await userModel.findById(id, 'name providers')
+    return await userModel.findById(id, 'name providers favourite')
+    
 }
 
 const getPassword = async (name) => {

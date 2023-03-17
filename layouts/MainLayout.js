@@ -50,7 +50,16 @@ const MainLayout = ({ children }) => {
         if (cookies.token) {
             axios.get(`/api/auth?token=${cookies.token}`).then(res => {
                 console.log(res.data)
-                dispatch({ type: 'SET_USER', user: { token: cookies.token, name: res.data.name, id: res.data.id, providers: res.data.providers } })
+                dispatch({
+                    type: 'SET_USER',
+                    user: {
+                        token: cookies.token,
+                        name: res.data.name,
+                        id: res.data.id,
+                        providers: res.data.providers,
+                        favourite: res.data.favourite
+                    }
+                })
             }).catch(err => {
                 if (err.response.status === 401) removeCookie('token')
                 dispatch({ type: 'CLEAR_USER' })
@@ -67,7 +76,7 @@ const MainLayout = ({ children }) => {
             <Container
                 maxWidth={router.pathname !== '/' ? "lg" : false}
                 disableGutters={router.pathname !== '/' ? false : true}
-                sx={{ marginTop: 8, }}>
+                sx={{ marginTop: 10, }}>
                 <TopBar />
                 {children}
             </Container>

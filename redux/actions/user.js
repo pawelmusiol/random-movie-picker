@@ -16,3 +16,10 @@ export const setProviders = (providers) => {
         providers
     }
 }
+
+export const setFavourites = (favourite) => {
+    return {
+        type: "SET_FAVOURITES",
+        favourite,
+    }
+}

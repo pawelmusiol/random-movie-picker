@@ -21,7 +21,21 @@ const userSchema = new Schema({
     providers: [{
         type: Number,
         default: [undefined],
-    }]
+    }],
+    favourite: {
+        movie: [{
+            type: Number,
+            default: [undefined],
+        }],
+        tv: [{
+            type: Number,
+            default: [undefined],
+        }],
+        people: [{
+            type: Number,
+            default: [undefined],
+        }]
+    }
 })
 
 export default models.User || model('User', userSchema)

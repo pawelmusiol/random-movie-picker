@@ -8,6 +8,8 @@ import MenuIcon from './menu.svg'
 import StarFilled from './starFilled.svg'
 import StarHalf from './starHalf.svg'
 import StarEmpty from './starEmpty.svg'
+import RightArrow from  './rightArrow.svg'
+import LeftArrow from  './leftArrow.svg'
 
 export { 
     Add,
@@ -19,5 +21,7 @@ export {
     MenuIcon,
     StarFilled,
     StarHalf,
-    StarEmpty
+    StarEmpty,
+    RightArrow,
+    LeftArrow
 }

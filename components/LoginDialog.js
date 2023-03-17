@@ -37,7 +37,8 @@ const LoginDialog = () => {
                     token: res.data.token, 
                     name: res.data.name, 
                     id: res.data.id,
-                    providers: res.data.providers
+                    providers: res.data.providers,
+                    favourite: res.data.favourite,
                 } })
             }, 1000)
         }).catch((err) => {

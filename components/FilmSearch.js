@@ -52,7 +52,7 @@ const useSearch = (Name, Type, Genre, Language, onSearch,) => {
         return true
     }
 
-    const onClick = (Type) => {
+    const onClick = (Type, Genre) => {
         router.replace({
             pathname: router.pathname,
             query: { ...router.query, name: Name, type: Type }
@@ -61,7 +61,7 @@ const useSearch = (Name, Type, Genre, Language, onSearch,) => {
             let uri = accents.remove(`/api/search?query=${Name}&type=${Type ? Type : 'multi'}&genre=${Genre}&page=1&language=${Language}`)
             axios.get(uri).then((res) => {
                 res.data.results = getProviders(res.data.results)
-                onSearch({ ...res.data, type: Type })
+                onSearch({ ...res.data, type: Type, genre: Genre })
             }).catch((err) => console.log(err))
         }
         else {
@@ -96,8 +96,8 @@ const FilmSearch = ({ onSearch }) => {
     const [Search, Error] = useSearch(FilmName, Type, Genre, AppContext.language, onSearch)
 
     useEffect(() => {
-        Search(Type)
-    }, [FilmName, Type])
+        Search(Type, Genre)
+    }, [FilmName, Type,Genre])
 
     return (
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>

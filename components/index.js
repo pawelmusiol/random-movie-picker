@@ -7,9 +7,9 @@ export { default as SingleResult } from "./SingleResult"
 export { default as LoginDialog } from "./LoginDialog"
 export { default as CreateList } from "./CreateList"
 export { default as ListsList } from "./ListsList"
-export { default as SingleList } from "./SingleList"
+export { default as SingleList } from "./ListsList/SingleList"
 export { default as CustomSnackbar } from "./CustomSnackbar"
-export { default as MoviePicker } from "./MoviePicker"
+export { default as MoviePicker } from "./ListFilms"
 export { default as ListInfo } from "./ListInfo"
 export { default as Landing } from './Landing'
 export { default as StreamingProviders } from './Movie/StreamingProviders'
@@ -22,3 +22,13 @@ export { default as SimilarFilms } from './Movie/SimilarFilms'
 export { default as AddMenu } from './AddMenu'
 export { default as ProvidersSubscriptions } from './User/ProvidersSubscriptions'
 export { default as DiscoverSearchForm } from './Discover/SearchForm'
+export { default as Films } from './ListFilms/Films'
+export { default as Picker } from './ListFilms/Picker'
+export { default as SingleFilm } from './ListFilms/SingleFilm'
+export { default as FilmsQueue } from './ListFilms/FilmsQueue'
+export { default as UserData } from './User/UserData'
+export { default as Credits } from './People/Credits'
+export { default as Details } from './People/Details'
+export { default as FavouriteButton } from './FavouriteButton'
+export { default as Carousel } from './Carousel'
+export { default as Favourite } from './User/Favourite'

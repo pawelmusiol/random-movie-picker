@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Menu, MenuItem, styled } from '@mui/material'
 import { CustomSnackbar, CreateList } from '.'
+import { useAppContext } from '../context'
 import { Add } from '../icons'
 import axios from 'axios'
 
@@ -14,6 +15,7 @@ const AddButton = styled('img')(({ theme }) => ({
 const AddMenu = ({ lists, film, user }) => {
     const [SnackbarState, setSnackbarState] = useState({ open: false, message: '', error: false })
     const [AnchorEl, setAnchorEl] = useState(null)
+    const [context, setContext] = useAppContext()
     const handleClose = () => {
         setAnchorEl(null)
     }
@@ -22,6 +24,9 @@ const AddMenu = ({ lists, film, user }) => {
             setSnackbarState({ open: true, message: res.data.text })
         })
         handleClose()
+    }
+    const OpenModal = () => {
+        setContext({ ...context, loginOpen: true })
     }
 
     return (
@@ -34,7 +39,12 @@ const AddMenu = ({ lists, film, user }) => {
                 open={Boolean(AnchorEl)}
                 onClose={handleClose}
             >
-                {lists.map((list, i) => <MenuItem onClick={() => AddFilm(list._id)} key={i}>{list.name}</MenuItem>)}
+                {lists.map((list, i) => <MenuItem
+                    onClick={() => list.name === "Log In" ? OpenModal() : AddFilm(list._id)}
+                    key={i}
+                >
+                    {list.name}
+                </MenuItem>)}
                 {lists[0].name !== 'Log In' && <MenuItem><CreateList /></MenuItem>}
             </Menu>
         </>

@@ -16,10 +16,9 @@ import {
     MenuItem,
 } from '@mui/material'
 import Link from 'next/link'
-import Image from 'next/image'
 import { useState, useCallback } from 'react'
-import { Delete, Favourite, Add, Movie, Person, MenuIcon, PersonAdd } from '../icons'
-import { Cinema } from '../images'
+import { Delete, Favourite, Add, Movie, Person, MenuIcon, PersonAdd } from '../../icons'
+import { Cinema } from '../../images'
 import { styled } from '@mui/material/styles'
 import { amber, red, grey } from '@mui/material/colors'
 import * as Colors from '@mui/material/colors'
@@ -156,7 +155,7 @@ const ActionMenu = ({ onDelete, onRequest, acceptRequest, isPrivate, onSwitchPri
 const SingleList = ({ list, onDelete, onRequest, acceptRequest, onSwitchPrivacy }) => {
     let OwnerName = list.users.find(user => user.isOwner === true)?.name ? list.users.find(user => user.isOwner === true)?.name : 'Unknown'
     return (
-        <Grid item xs={4} >
+        <Grid item xs={12} md={4} >
             <Card>
 
                 <CardHeader

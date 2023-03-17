@@ -1,4 +1,4 @@
-import { VoteStars, AddMenu } from '../'
+import { VoteStars, AddMenu, FavouriteButton } from '../'
 import { Box, Grid, Typography } from '@mui/material'
 import { useSelector } from 'react-redux'
 import useSetLists from '../ListsList/useSetLists'
@@ -27,6 +27,7 @@ const Header = ({ id, type, title, originalTitle, releaseYear, runtime, voteAver
                 <VoteStars rating={voteAverage} />
             </Grid>
             <Grid item sx={{ display: 'flex', alignItems: 'center' }}>
+                <FavouriteButton id={id} type={type} />
                 <Typography>Add To List</Typography>
                 <AddMenu film={{ id: id, name: title, type: type }} user={user} lists={lists.length ? lists : [{ name: 'Log In' }]} />
             </Grid>

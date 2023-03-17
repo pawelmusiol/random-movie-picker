@@ -2,14 +2,14 @@ import { Box, Grid, Select, MenuItem, FormControl, InputLabel, Button } from '@m
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import { useAppContext } from '../../context'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 
 const ProvidersSubscriptions = ({ id, providers }) => {
     const [Data, setData] = useState({ ready: false, })
     const [SelectedProvider, setSelectedProvider] = useState(-1)
     const [AppState] = useAppContext()
     const dispatch = useDispatch()
-
+    const user = useSelector(state => state.User)
 
 
     useEffect(() => {
@@ -26,7 +26,7 @@ const ProvidersSubscriptions = ({ id, providers }) => {
                 })
             })
         }
-    }, [id])
+    }, [id, user])
 
     const handleSubmit = () => {
         let index = Data.userProviders.findIndex(provider => provider.id === SelectedProvider)
@@ -39,12 +39,12 @@ const ProvidersSubscriptions = ({ id, providers }) => {
     }
 
     return (
-        <Box>
+        <Box >
             {Data.userProviders &&
-                <Grid container>
+                <Grid container maxWidth={200}>
                     {Data.userProviders.map((provider, i) =>
-                        <Grid xs={1} key={`user-provider-${i}`}>
-                            <img style={{ maxWidth: 60 }} src={"https://image.tmdb.org/t/p/w500" + provider.logoPath} />
+                        <Grid item xs={4} key={`user-provider-${i}`}>
+                            <img style={{ minWidth: 60, maxWidth: 60 }} src={"https://image.tmdb.org/t/p/w500" + provider.logoPath} />
                         </Grid>
                     )}
                 </Grid>

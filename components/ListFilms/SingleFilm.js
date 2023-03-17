@@ -43,11 +43,10 @@ const SingleFilm = ({ film, width, selectFilm, changePriority, deleteFilm, desel
         film.priority = parseInt(e.target.value)
         changePriority(film)
     }
-
     return (
         <>
             {film ?
-                <Card id={id} ref={cardRef} sx={{ ...sx, width: 250, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }
+                <Card id={film._id} ref={cardRef} sx={{ ...sx, width: 250, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }
                 } >
                     <CardHeader sx={{ minHeight: 100, /* '& div': { pointerEvents: 'none' } */ }}
                         title={film.name}
@@ -57,13 +56,13 @@ const SingleFilm = ({ film, width, selectFilm, changePriority, deleteFilm, desel
                                 <IconButton>
                                     <DeleteImage src={Delete.src} onClick={() => deleteFilm(film._id)} />
                                 </IconButton>
-                                {selectFilm && <Switch inputRef={inputRef} onChange={changeFilmState} />}
+                                {selectFilm && <Switch id={film.tmdbId} inputRef={inputRef} onChange={changeFilmState} />}
 
                             </Box>}
                     />
                     {selectFilm && <PriorityGroup Priority={Priority} setPriority={onPriorityChange} />}
                     <CardMedia
-                    onClick={() => router.push(`/movie/${film.tmdbId}`)}
+                    onClick={() => router.push(`/${film.type}/${film.tmdbId}`)}
                         className='slide'
                         component='img'
                         image={film.posterPath ? `https://image.tmdb.org/t/p/w500/${film.posterPath}` : NoImage.src}

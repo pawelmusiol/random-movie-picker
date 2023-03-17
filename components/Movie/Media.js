@@ -12,14 +12,17 @@ const ImageBox = ({ src, height }) => (
     </Grid>
 )
 
-const MainBox = styled(Box)({
+const MainBox = styled(Box)(({ theme }) => ({
     display: 'flex',
     justifyContent: 'center',
     backgroundColor: 'black',
     overflow: 'visible',
     position: 'relative',
     padding: '20px 0 20px 0',
-    ':before': {
+    [theme.breakpoints.down('md')]: {
+        flexDirection: 'column',
+    }
+    /* ':before': {
         content: '""',
         backgroundColor: 'black',
         width: 'calc((100vw - 100%) / 2)',
@@ -36,8 +39,28 @@ const MainBox = styled(Box)({
         position: 'absolute',
         left: '100%',
         top: 0,
-    },
-})
+    }, */
+}))
+
+const Iframe = styled('iframe')(({ theme }) => ({
+    minWidth: '50%',
+    maxWidth: '50%',
+    aspectRatio: '16 / 9',
+    [theme.breakpoints.down('md')]: {
+        minWidth: '100%',
+        maxWidth: '100%',
+    }
+}))
+
+const ImagesBox = styled(Grid)(({ theme }) => ({
+    minWidth: '50%',
+    maxWidth: '50%',
+    aspectRatio: '500/281',
+    [theme.breakpoints.down('md')]: {
+        minWidth: '100%',
+        maxWidth: '100%',
+    }
+}))
 
 const Images = ({ images }) => {
     let imagesDom = []
@@ -51,9 +74,9 @@ const Images = ({ images }) => {
 
     }
     return (
-        <Grid container sx={{ minWidth: '50%', maxWidth: '50%', aspectRatio: '500/281' }}>
+        <ImagesBox container>
             {imagesDom}
-        </Grid>
+        </ImagesBox>
     )
 }
 
@@ -63,8 +86,7 @@ const Media = ({ videos, images }) => {
             {(videos.length || images.length) ?
                 <MainBox>
                     {videos.length &&
-                        <iframe
-                            style={{ minWidth: '50%', maxWidth: '50%', aspectRatio: '16 / 9' }}
+                        <Iframe
                             src={`https://www.youtube.com/embed/${videos[0].key}`}
                             title="YouTube video player"
                             frameBorder="0"

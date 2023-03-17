@@ -12,7 +12,11 @@ const SearchResult = ({ results, type }) => {
     const getGenre = (result) => {
         console.log(result.genre_ids)
         if(result.genre_ids.length){
-            return genres.find(genre => genre.id === result.genre_ids[0]).name
+            try {
+                return genres.find(genre => genre.id === result.genre_ids[0]).name
+            } catch (error) {
+             return ''   
+            }
         }
         return ''
     }

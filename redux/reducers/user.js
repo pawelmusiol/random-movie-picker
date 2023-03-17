@@ -3,6 +3,11 @@ const initialValues = {
     token: '',
     id: '',
     providers: [],
+    favourite: {
+        people: [],
+        movies: [],
+        tv: [],
+    }
 }
 
 const User = (state = initialValues, action) => {
@@ -12,7 +17,9 @@ const User = (state = initialValues, action) => {
         case "CLEAR_USER":
             return initialValues
         case "SET_PROVIDERS":
-            return {...state, providers: action.providers}
+            return { ...state, providers: action.providers }
+        case "SET_FAVOURITES":
+            return { ...state, favorites: action.favourites }
         default:
             return state
     }

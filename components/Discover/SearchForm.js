@@ -4,6 +4,7 @@ import axios from "axios";
 import { useSelector } from "react-redux";
 import { useAppContext } from '../../context';
 import { useGenres } from '../FilmSearch';
+
 const Types = [
     {
         value: 'movie',
@@ -33,33 +34,33 @@ const useProviders = (language) => {
     const [ProvidersArray, setProvidersArray] = useState([])
     const [Providers, setProviders] = useState([])
     console.log(Providers)
-    useEffect(()=> {
+    useEffect(() => {
         axios.get(`/api/user/1/providers?language=${language}`).then(res => {
             setProvidersArray(res.data.availableProviders)
         })
-    },[])
+    }, [])
     useEffect(() => {
-        if(UserProviders.length && ProvidersArray.length)
-        setProviders(UserProviders.map(Up => {
-            return ProvidersArray.find(Pa => Pa.id === Up)
-        }))
-    },[UserProviders, ProvidersArray])
-
+        if (UserProviders.length && ProvidersArray.length)
+            setProviders(UserProviders.map(Up => {
+                return ProvidersArray.find(Pa => Pa.id === Up)
+            }))
+    }, [UserProviders, ProvidersArray])
+    console.log(ProvidersArray)
     return [Providers, setProviders, ProvidersArray]
 }
 
 const useCast = (language) => {
     const [Text, setText] = useState('')
-    const [CastArray, setCastArray] = useState([{id: 0, name: 'd'}])
+    const [CastArray, setCastArray] = useState([{ id: 0, name: 'd' }])
     const [SelectedCast, setSelectedCast] = useState([])
 
     useEffect(() => {
-        if(Text.length)
-        axios.get(`/api/cast?language=${language}&query=${Text}`).then(res => {
-            setCastArray([...SelectedCast, ...res.data])
-        })
+        if (Text.length)
+            axios.get(`/api/cast?language=${language}&query=${Text}`).then(res => {
+                setCastArray([...SelectedCast, ...res.data])
+            })
 
-    },[Text])
+    }, [Text])
     return [CastArray, SelectedCast, setSelectedCast, setText]
 }
 
@@ -71,33 +72,48 @@ rok produkcji
 obsada
 watch providers
 */
-const SearchForm = ({ }) => {
+const SearchForm = ({setResults }) => {
     const [AppContext] = useAppContext()
     const [Type, setType] = useState('movie')
-    const [Genre, setGenre] = useState(0)
-    const [SafeSearch, setSafeSearch] = useState(false)
+    const [Genres, setGenres] = useState([])
+    const [SafeSearch, setSafeSearch] = useState(true)
     const [Years, setYears] = useState({ from: 2020, to: 2023 })
     const YearsArray = useYears()
     const [Providers, setProviders, ProvidersArray] = useProviders(AppContext.language)
     const [CastArray, SelectedCast, setSelectedCast, setText] = useCast(AppContext.language)
 
-    const Genres = useGenres(AppContext.language, Type)
+    const GenresArray = useGenres(AppContext.language, Type)
 
     console.log(Providers)
 
     const onSearch = () => {
         console.log({
-            Type:Type,
-            Genre: Genre,
-            SafeSearch: SafeSearch,
+            Type: Type,
+            Genre: Genres,
+            SafeSearch: !SafeSearch,
             Years: Years,
-            Providers: Providers,
+            Providers: ProvidersArray,
             Cast: SelectedCast,
+        })
+        let queryData = [
+            `type=${Type}`,
+            'with_genres=' + Genres.map(genre => genre.id).join('.'),
+            `include_adult=${SafeSearch}`,
+            `primary_release_date.gte=${Years.from}-01-01`,
+            `primary_release_date.lte=${Years.to}-12-31`,
+            `with_watch_providers=` + Providers.map(provider => provider.id).join('.'),
+            Type === 'movie' ? `with_cast=` + SelectedCast.map(cast => cast.id).join('.') : '',
+            `language=${AppContext.language}`,
+            `page=1`
+        ]
+        console.log(queryData.join('&'))
+        axios.get('/api/discover?' + queryData.join('&')).then(res => {
+            setResults({...res.data, type: Type})
         })
     }
 
     return (
-        <Box sx={{ display:'flex', flexDirection: 'column', gap: 2}}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             <FormControl>
                 <InputLabel id="search-form-type" >Type</InputLabel>
                 <Select
@@ -110,18 +126,24 @@ const SearchForm = ({ }) => {
                 </Select>
             </FormControl>
             <FormControl>
-                <InputLabel id="search-form-genre" >Genre</InputLabel>
-                <Select
-                    value={Genre}
-                    onChange={e => setGenre(e.target.value)}
-                    label="genre"
-                    labelId="search-form-genre"
-                >
-                    <MenuItem value={0}>All</MenuItem>
-                    {Genres.map((genre, i) => <MenuItem value={genre.id} key={`genre-${i}`}>{genre.name}</MenuItem>)}
-                </Select>
+                {/* <InputLabel id="search-form-providers">Providers</InputLabel> */}
+                <Autocomplete
+                    value={Genres}
+                    onChange={(event, newValues) => setGenres(newValues)}
+                    multiple
+                    options={GenresArray}
+                    getOptionLabel={option => option.name}
+                    filterSelectedOptions
+                    renderInput={(params) => (
+                        <TextField
+                            {...params}
+                            label="Genres"
+                            placeholder="Genres"
+                        />
+                    )}
+                />
             </FormControl>
-            <FormControlLabel control={<Checkbox onChange={e => setSafeSearch(e.target.checked)} />} label='Safe search' />
+            <FormControlLabel control={<Checkbox checked={SafeSearch} onChange={e => setSafeSearch(e.target.checked)} />} label='Safe search' />
             <FormControl>
                 <InputLabel id="search-form-year-from">Year From</InputLabel>
                 <Select
@@ -155,34 +177,37 @@ const SearchForm = ({ }) => {
                     getOptionLabel={option => option.name}
                     filterSelectedOptions
                     renderInput={(params) => (
-                    <TextField 
-                    {...params}
-                    label="Providers"
-                    placeholder="Providers"
-                    />
+                        <TextField
+                            {...params}
+                            label="Providers"
+                            placeholder="Providers"
+                        />
                     )}
                 />
             </FormControl>
-            <FormControl>
-                {/* <InputLabel id="search-form-providers">Providers</InputLabel> */}
-                <Autocomplete
-                    value={SelectedCast}
-                    onChange={(event, newValues) => setSelectedCast(newValues)}
-                    //labelId="search-form-providers"
-                    multiple
-                    options={CastArray}
-                    getOptionLabel={option => option.name}
-                    filterSelectedOptions
-                    renderInput={(params) => (
-                    <TextField
-                    onChange={e => setText(e.target.value)}
-                    {...params}
-                    label="Cast"
-                    placeholder="Cast"
+            {
+                Type !== 'tv' &&
+                <FormControl>
+                    {/* <InputLabel id="search-form-providers">Providers</InputLabel> */}
+                    <Autocomplete
+                        value={SelectedCast}
+                        onChange={(event, newValues) => setSelectedCast(newValues)}
+                        //labelId="search-form-providers"
+                        multiple
+                        options={CastArray}
+                        getOptionLabel={option => option.name}
+                        filterSelectedOptions
+                        renderInput={(params) => (
+                            <TextField
+                                onChange={e => setText(e.target.value)}
+                                {...params}
+                                label="Cast"
+                                placeholder="Cast"
+                            />
+                        )}
                     />
-                    )}
-                />
-            </FormControl>
+                </FormControl>
+            }
             <Button onClick={onSearch}>Search</Button>
         </Box>
     )
