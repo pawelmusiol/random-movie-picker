@@ -35,6 +35,7 @@ const processData = async (data, type) => {
         return {
             title: res.title ? res.title : res.name,
             posterPath: res.poster_path ? res.poster_path : res.profile_path,
+            id: res.id,
         }
     }))
 
