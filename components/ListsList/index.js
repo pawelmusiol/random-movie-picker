@@ -1,9 +1,11 @@
 import axios from 'axios';
 import { useSelector, useDispatch } from 'react-redux';
-import { Box, Grid, Dialog, DialogTitle, Typography } from '@mui/material'
+import { Box, Grid } from '@mui/material'
 import { useState, useEffect } from 'react'
 import { SingleList } from '..'
 import useSetLists from './useSetLists'
+import RequestDialog from './RequestDialog';
+import { useRouter } from 'next/router';
 
 const ListsList = () => {
 
@@ -11,15 +13,26 @@ const ListsList = () => {
     const [RequestLink, setRequestLink] = useState('')
     const UserId = useSelector(state => state.User.id)
     const dispatch = useDispatch()
+    const router = useRouter()
+
     let lists = useSetLists()
     const deleteList = (id) => {
+
         axios.delete(`/api/list/${id}`, { headers: { userId: UserId } }).then(res => {
             dispatch({ type: 'SET_LISTS', lists: res.data.lists })
         })
     }
     const inviteUser = (id) => {
+        let currentUrl = ''
+        if (document) {
+            document.URL.split('/').map((s, i, arr) => {
+                if (i < arr.length - 1) currentUrl += s + '/'
+            })
+            console.log(currentUrl)
+        }
+        console.log('dupa')
         axios.get(`/api/list/${id}/request`).then(res => {
-            setRequestLink('localhost:3000/request/' + res.data.token)
+            setRequestLink(currentUrl + 'request/' + res.data.token)
             setDialogOpen(true)
         })
     }
@@ -51,13 +64,6 @@ const ListsList = () => {
     )
 }
 
-const RequestDialog = ({ open, setOpen, link }) => {
-    return (
-        <Dialog open={open} onClose={() => setOpen(false)}>
-            <DialogTitle>Send this link to your friends</DialogTitle>
-            <Typography variant="body1">{link}</Typography>
-        </Dialog>
-    )
-}
+
 
 export default ListsList

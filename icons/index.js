@@ -10,6 +10,7 @@ import StarHalf from './starHalf.svg'
 import StarEmpty from './starEmpty.svg'
 import RightArrow from  './rightArrow.svg'
 import LeftArrow from  './leftArrow.svg'
+import LaptopCheckIcon from './laptopCheckIcon.svg'
 
 export { 
     Add,
@@ -23,5 +24,6 @@ export {
     StarHalf,
     StarEmpty,
     RightArrow,
-    LeftArrow
+    LeftArrow,
+    LaptopCheckIcon
 }

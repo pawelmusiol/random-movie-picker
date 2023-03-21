@@ -119,18 +119,21 @@ const ActionMenu = ({ onDelete, onRequest, acceptRequest, isPrivate, onSwitchPri
                     <DeleteImage src={MenuIcon.src} onClick={e => setAnchorEl(e.currentTarget)} color='none' />
                 </IconButton>
                 <Menu
+                    disableEnforceFocus
+                    disableRestoreFocus
+                    disableAutoFocus
                     anchorEl={AnchorEl}
                     id='list-menu'
                     open={Boolean(AnchorEl)}
                     onClose={handleClose}
                 >
                     {onDelete &&
-                        <MenuItem onClick={() => { onDelete(); handleClose; }}>
+                        <MenuItem onClick={() => { onDelete(); handleClose(); }}>
                             <DeleteImage src={Delete.src} />
                             <Typography>Remove</Typography>
                         </MenuItem>
                     }
-                    <MenuItem>
+                    <MenuItem onClick={() => handleClose()}>
                         <DeleteImage src={Favourite.src} />
                         <Typography> Add To Favourite</Typography>
                     </MenuItem>

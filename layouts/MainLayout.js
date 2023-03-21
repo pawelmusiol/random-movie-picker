@@ -1,4 +1,4 @@
-import { Container, CssBaseline } from '@mui/material'
+import { Container, CssBaseline, useTheme, useMediaQuery } from '@mui/material'
 import { TopBar } from '../components'
 import { useCookies } from 'react-cookie'
 import axios from 'axios'
@@ -43,8 +43,11 @@ const MainLayout = ({ children }) => {
     }
 
     const [cookies, setCookie, removeCookie] = useCookies(['token'])
+    console.log(cookies)
     const dispatch = useDispatch()
     const router = useRouter()
+    const uTheme = useTheme()
+    const mobile = useMediaQuery(uTheme.breakpoints.down('md'))
 
     useEffect(() => {
         if (cookies.token) {
@@ -76,7 +79,7 @@ const MainLayout = ({ children }) => {
             <Container
                 maxWidth={router.pathname !== '/' ? "lg" : false}
                 disableGutters={router.pathname !== '/' ? false : true}
-                sx={{ marginTop: 10, }}>
+                sx={{ marginTop: (router.pathname === '/' && mobile) ? 23 : 10, }}>
                 <TopBar />
                 {children}
             </Container>

@@ -4,7 +4,7 @@ import HamburgerIcon from './HamburgerIcon'
 import MobileMenu from './MobileMenu'
 import { useSelector, useDispatch } from 'react-redux'
 import { useRouter } from 'next/router'
-import {  useState } from 'react'
+import { useState } from 'react'
 import { useCookies } from 'react-cookie'
 import axios from 'axios'
 
@@ -26,7 +26,7 @@ const TopBar = () => {
                     {useMediaQuery(theme.breakpoints.down('md')) ?
                         <>
                             <HamburgerIcon open={Open} onClick={() => setOpen(!Open)} />
-                            <MenuButton sx={{zIndex: 2000}} onClick={() => setOpen(false)} href={Pages[0].href}>{Pages[0].text}</MenuButton>
+                            <MenuButton sx={{ zIndex: 2000 }} onClick={() => setOpen(false)} href={Pages[0].href}>{Pages[0].text}</MenuButton>
                             <MobileMenu open={Open}>
                                 {Pages.map((page, i) => {
                                     if (i !== 0) {
@@ -52,7 +52,7 @@ const TopBar = () => {
                             })}
                         </>}
                 </Box>
-                <Box sx={{ flexGrow: 0}}>
+                <Box sx={{ flexGrow: 0 }}>
                     {User.name === ''
                         ? <LoginDialog />
                         : <UserMenu user={User} />
@@ -83,6 +83,9 @@ const UserMenu = ({ user }) => {
         <>
             <MenuButton onClick={e => setAnchorEl(e.currentTarget)}>{user.name}</MenuButton>
             <Menu
+                disableEnforceFocus
+                disableRestoreFocus
+                disableAutoFocus
                 anchorEl={AnchorEl}
                 id='user-menu'
                 open={Boolean(AnchorEl)}

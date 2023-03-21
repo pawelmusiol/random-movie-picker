@@ -6,6 +6,7 @@ import { useAppContext } from '../../context'
 import axios from 'axios'
 
 const MoviePicker = ({ listId, films }) => {
+    console.log(films)
     const dispatch = useDispatch()
     const refs = useRef([])
     const [SelectedFilms, setSelectedFilms] = useState([])

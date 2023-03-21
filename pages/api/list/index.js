@@ -25,10 +25,10 @@ export default async function handler(req, res) {
                     requests: [],
                     films: [],
                 }
-                await listModel.insertMany(listData)
+                let currentList = await listModel.insertMany(listData)
+                console.log(currentList)
                 const Lists = await listModel.find({ 'users._id': body.userId }).sort([['_id', -1]])
-                console.log(Lists)
-                res.status(201).send({ lists: Lists, text: 'List Created' })
+                res.status(201).send({ lists: Lists, text: 'List Created', currentListId: currentList[0]._id })
             } catch (err) {
                 res.status(500).send({ text: 'Unexpected Error Ocured' })
             }

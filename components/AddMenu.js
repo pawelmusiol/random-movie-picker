@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Menu, MenuItem, styled } from '@mui/material'
+import { Menu, MenuItem, Button, styled } from '@mui/material'
 import { CustomSnackbar, CreateList } from '.'
 import { useAppContext } from '../context'
 import { Add } from '../icons'
@@ -16,6 +16,7 @@ const AddMenu = ({ lists, film, user }) => {
     const [SnackbarState, setSnackbarState] = useState({ open: false, message: '', error: false })
     const [AnchorEl, setAnchorEl] = useState(null)
     const [context, setContext] = useAppContext()
+    const [CreateListOpen, setCreateListOpen] = useState(false)
     const handleClose = () => {
         setAnchorEl(null)
     }
@@ -31,9 +32,14 @@ const AddMenu = ({ lists, film, user }) => {
 
     return (
         <>
+            <CreateList open={CreateListOpen} onClose={() => setCreateListOpen(false)} addToList={AddFilm} />
             <AddButton src={Add.src} onClick={e => setAnchorEl(e.currentTarget)} />
             <CustomSnackbar key="FilmAdd" snackbarState={SnackbarState} setSnackbarState={setSnackbarState} />
             <Menu
+                disableEnforceFocus
+                disableRestoreFocus
+                disableAutoFocus
+                disableAutoFocusItem
                 anchorEl={AnchorEl}
                 id='add-menu'
                 open={Boolean(AnchorEl)}
@@ -45,7 +51,10 @@ const AddMenu = ({ lists, film, user }) => {
                 >
                     {list.name}
                 </MenuItem>)}
-                {lists[0].name !== 'Log In' && <MenuItem><CreateList /></MenuItem>}
+                {lists[0].name !== 'Log In' && <MenuItem /* onClick={handleClose} */>
+                    <Button sx={{ padding: 1, minWidth: 0 }} onClick={() => setCreateListOpen(true)}>
+                        <AddButton src={Add.src} />
+                    </Button></MenuItem>}
             </Menu>
         </>
     )

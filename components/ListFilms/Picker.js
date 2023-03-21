@@ -104,7 +104,7 @@ const Picker = ({ selectedFilms, addToQueue }) => {
                     }
                 }}>
                 {SelectedFilm.left.film.name &&
-                    <Box sx={{ transition: '.5s', display: 'flex', flexDirection: 'row' }} >
+                    <Box sx={{ transition: '.5s', display: 'flex', flexDirection: 'row', maxHeight: '70vw' }} >
                         <SingleFilm id='left-film' noAction film={SelectedFilm.left.film} width={250} sx={SelectedFilm.left.sx} />
                         <SingleFilm id='main-film' noAction film={SelectedFilm.main.film} width={250} sx={SelectedFilm.main.sx} />
                         <SingleFilm id='right-film' noAction film={SelectedFilm.right.film} width={250} sx={SelectedFilm.right.sx} />

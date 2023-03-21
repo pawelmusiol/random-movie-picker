@@ -13,6 +13,7 @@ export const getFilms = async (films, language) => {
             releaseDate: result.release_date ? result.release_date : result.first_air_date,
             tmdbId: result.id,
             type: film.type,
+            addedBy: film.addedBy
         }
 
     }))

@@ -9,6 +9,7 @@ import {
     Radio,
     RadioGroup,
     Grid,
+    Typography,
     useTheme,
     useMediaQuery
 } from "@mui/material"
@@ -26,8 +27,23 @@ const DeleteImage = styled('img')(({ theme, color }) => ({
     maxWidth: 32,
 }))
 
-const SingleFilm = ({ film, width, selectFilm, changePriority, deleteFilm, deselectFilm, sx, inputRef, listId, id = undefined, noAction = false }) => {
+const SCardHeader = styled(CardHeader)(({ theme }) => ({
 
+    '& > div': {
+        display: 'flex',
+        flexDirection: 'column'
+    },
+
+    [theme.breakpoints.down('md')]: {
+        flexDirection: 'column',
+        '& > div': {
+            flexDirection: 'row-reverse'
+        }
+    }
+}))
+
+const SingleFilm = ({ film, width, selectFilm, changePriority, deleteFilm, deselectFilm, sx, inputRef, listId, id = undefined, noAction = false }) => {
+    console.log(film)
     const theme = useTheme()
     const router = useRouter()
     const [Priority, setPriority] = useState(1)
@@ -49,6 +65,7 @@ const SingleFilm = ({ film, width, selectFilm, changePriority, deleteFilm, desel
         <>
             {film ?
                 <Grid item xs={6} md={3} sx={{
+                    ...sx,
                     '& > div': {
                         display: 'flex',
                         justifyContent: 'space-between',
@@ -58,19 +75,20 @@ const SingleFilm = ({ film, width, selectFilm, changePriority, deleteFilm, desel
                 }}>
                     <Card id={film._id} /* sx={{ ...sx, width: 250, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }} */ >
                         <Box>
-                            <CardHeader sx={{  /*'& div': { pointerEvents: 'none' } */ }}
+                            <SCardHeader
                                 title={film.name}
                                 titleTypographyProps={{ sx: { fontSize: mobile ? 16 : 20 } }}
                                 action={!noAction &&
-                                    <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                                    <>
                                         <IconButton>
                                             <DeleteImage src={Delete.src} onClick={() => deleteFilm(film._id)} />
                                         </IconButton>
                                         {selectFilm && <Switch id={film.tmdbId} inputRef={inputRef} onChange={changeFilmState} />}
-
-                                    </Box>}
+                                    </>
+                                }
                             />
                             {selectFilm && <PriorityGroup Priority={Priority} setPriority={onPriorityChange} />}
+                            {film.addedBy && <Typography>Added By {film.addedBy.name}</Typography>}
                         </Box>
                         <Box
                             sx={{
