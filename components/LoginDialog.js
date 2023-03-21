@@ -25,7 +25,7 @@ const LoginDialog = () => {
 
     useEffect(() => {
         setOpen(AppState.loginOpen)
-    },[AppState])
+    }, [AppState])
 
     const handleSignIn = () => {
         axios.post('/api/auth', Values).then((res) => {
@@ -33,13 +33,15 @@ const LoginDialog = () => {
             setSnackbarState({ message: res.data.text, open: true, error: false })
             setTimeout(() => {
                 setCookies('token', res.data.token)
-                dispatch({ type: "SET_USER", user: { 
-                    token: res.data.token, 
-                    name: res.data.name, 
-                    id: res.data.id,
-                    providers: res.data.providers,
-                    favourite: res.data.favourite,
-                } })
+                dispatch({
+                    type: "SET_USER", user: {
+                        token: res.data.token,
+                        name: res.data.name,
+                        id: res.data.id,
+                        providers: res.data.providers,
+                        favourite: res.data.favourite,
+                    }
+                })
             }, 1000)
         }).catch((err) => {
             setSnackbarState({ message: err.response.data.text, open: true, error: true })
@@ -51,6 +53,12 @@ const LoginDialog = () => {
         setSignUp(false)
         setValues({ login: '', password: '' })
         setSignUpValues({ mail: '' })
+    }
+    const handleKeyPress = e => {
+        if (e.key === 'Enter') {
+            if(SignUp) handleSignUp()
+            else handleSignIn()
+        }
 
     }
 
@@ -60,16 +68,18 @@ const LoginDialog = () => {
             <Dialog maxWidth='md' open={Open} onClose={handleClose}>
                 <DialogTitle>Sign In</DialogTitle>
                 <DialogContent>
-                    <Box sx={{ display: 'flex', minWidth: '300px', gap: 2, flexDirection: 'column' }}>
+                    <Box sx={{ display: 'flex', gap: 2, flexDirection: 'column' }}>
                         <TextField
                             value={Values.login}
                             onChange={(e) => setValues({ ...Values, login: e.target.value })}
+                            onKeyDown={handleKeyPress}
                             label="Login"
                             fullWidth
                         />
                         <TextField
                             value={Values.password}
                             onChange={(e) => setValues({ ...Values, password: e.target.value })}
+                            onKeyDown={handleKeyPress}
                             label="Password"
                             fullWidth
                             type="password"
@@ -78,6 +88,7 @@ const LoginDialog = () => {
                             <TextField
                                 value={SignUpValues.mail}
                                 onChange={(e) => setSignUpValues({ ...SignUpValues, mail: e.target.value })}
+                                onKeyDown={handleKeyPress}
                                 label="Mail"
                                 fullWidth
                                 type="email"

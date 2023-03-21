@@ -8,9 +8,11 @@ import {
     IconButton,
     Radio,
     RadioGroup,
-    FormLabel
+    Grid,
+    useTheme,
+    useMediaQuery
 } from "@mui/material"
-import { useRef, useState } from "react"
+import { useRef, useState, useEffect } from "react"
 import { Delete } from '../../icons'
 import { NoImage } from "../../images"
 import { useDispatch } from 'react-redux'
@@ -26,11 +28,10 @@ const DeleteImage = styled('img')(({ theme, color }) => ({
 
 const SingleFilm = ({ film, width, selectFilm, changePriority, deleteFilm, deselectFilm, sx, inputRef, listId, id = undefined, noAction = false }) => {
 
+    const theme = useTheme()
     const router = useRouter()
-    const cardRef = useRef(null)
     const [Priority, setPriority] = useState(1)
-    
-    
+    const mobile = useMediaQuery(theme.breakpoints.down('md'))
 
     const changeFilmState = (e) => {
         film.priority = Priority
@@ -43,34 +44,65 @@ const SingleFilm = ({ film, width, selectFilm, changePriority, deleteFilm, desel
         film.priority = parseInt(e.target.value)
         changePriority(film)
     }
+
     return (
         <>
             {film ?
-                <Card id={film._id} ref={cardRef} sx={{ ...sx, width: 250, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }
-                } >
-                    <CardHeader sx={{ minHeight: 100, /* '& div': { pointerEvents: 'none' } */ }}
-                        title={film.name}
-                        titleTypographyProps={{ sx: { fontSize: 20 } }}
-                        action={!noAction &&
-                            <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-                                <IconButton>
-                                    <DeleteImage src={Delete.src} onClick={() => deleteFilm(film._id)} />
-                                </IconButton>
-                                {selectFilm && <Switch id={film.tmdbId} inputRef={inputRef} onChange={changeFilmState} />}
+                <Grid item xs={6} md={3} sx={{
+                    '& > div': {
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        flexDirection: 'column',
+                        minHeight: '100%'
+                    }
+                }}>
+                    <Card id={film._id} /* sx={{ ...sx, width: 250, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }} */ >
+                        <Box>
+                            <CardHeader sx={{  /*'& div': { pointerEvents: 'none' } */ }}
+                                title={film.name}
+                                titleTypographyProps={{ sx: { fontSize: mobile ? 16 : 20 } }}
+                                action={!noAction &&
+                                    <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                                        <IconButton>
+                                            <DeleteImage src={Delete.src} onClick={() => deleteFilm(film._id)} />
+                                        </IconButton>
+                                        {selectFilm && <Switch id={film.tmdbId} inputRef={inputRef} onChange={changeFilmState} />}
 
-                            </Box>}
-                    />
-                    {selectFilm && <PriorityGroup Priority={Priority} setPriority={onPriorityChange} />}
-                    <CardMedia
-                    onClick={() => router.push(`/${film.type}/${film.tmdbId}`)}
-                        className='slide'
-                        component='img'
-                        image={film.posterPath ? `https://image.tmdb.org/t/p/w500/${film.posterPath}` : NoImage.src}
-                        alt={`${film.name} image`}
-                        height={width * 3 / 2}
-                        width={width}
-                    />
-                </Card >
+                                    </Box>}
+                            />
+                            {selectFilm && <PriorityGroup Priority={Priority} setPriority={onPriorityChange} />}
+                        </Box>
+                        <Box
+                            sx={{
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'streach',
+                                overflow: 'hidden',
+                                height: '100%',
+                                width: '100%',
+                                flexGrow: 4,
+                            }}
+                        >
+                            <CardMedia
+                                onClick={() => router.push(`/${film.type}/${film.tmdbId}`)}
+                                className='slide'
+                                component='img'
+                                image={film.posterPath ? `https://image.tmdb.org/t/p/w500/${film.posterPath}` : NoImage.src}
+                                alt={`${film.name} image`}
+
+                                sx={{
+                                    flexShrink: 0,
+                                    minHeight: '100%',
+                                    maxHeight: '100%',
+                                    minWidth: '100%',
+                                    maxWidth: '100%',
+                                    objectFit: film.posterPath ? 'cover' : 'contain',
+                                    width: 'unset',
+                                }}
+                            />
+                        </Box>
+                    </Card >
+                </Grid>
                 : <p>wait</p>
             }
         </>
@@ -84,7 +116,7 @@ const PriorityGroup = ({ Priority, setPriority }) => {
             value={Priority}
             onChange={setPriority}
             sx={{ flexDirection: 'row' }}>
-            <Radio value={1} sx={{ color: green[500] }}   />
+            <Radio value={1} sx={{ color: green[500] }} />
             <Radio value={2} sx={{ color: yellow[500] }} />
             <Radio value={3} sx={{ color: red[500] }} />
         </RadioGroup>

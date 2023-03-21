@@ -1,8 +1,15 @@
-import { Box, Grid, Select, MenuItem, FormControl, InputLabel, Button } from '@mui/material'
+import { Box, Grid, Select, MenuItem, FormControl, InputLabel, Button, styled } from '@mui/material'
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import { useAppContext } from '../../context'
 import { useDispatch, useSelector } from 'react-redux'
+
+const ProvidersGrid = styled(Grid)(({theme}) => ({
+    maxWidth: 200,
+    [theme.breakpoints.down('md')]:{
+        maxWidth: '100%'
+    }
+}))
 
 const ProvidersSubscriptions = ({ id, providers }) => {
     const [Data, setData] = useState({ ready: false, })
@@ -41,13 +48,13 @@ const ProvidersSubscriptions = ({ id, providers }) => {
     return (
         <Box >
             {Data.userProviders &&
-                <Grid container maxWidth={200}>
+                <ProvidersGrid container>
                     {Data.userProviders.map((provider, i) =>
-                        <Grid item xs={4} key={`user-provider-${i}`}>
+                        <Grid item xs={3} md={4} key={`user-provider-${i}`}>
                             <img style={{ minWidth: 60, maxWidth: 60 }} src={"https://image.tmdb.org/t/p/w500" + provider.logoPath} />
                         </Grid>
                     )}
-                </Grid>
+                </ProvidersGrid>
             }
             <FormControl sx={{ minWidth: 120 }}>
                 <InputLabel id='provider-select-label'>Providers</InputLabel>

@@ -3,7 +3,15 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import { ProvidersSubscriptions, UserData, Favourite } from '../../components'
 import { useSelector } from 'react-redux'
-import { Box, Grid } from '@mui/material'
+import { Box, Grid, styled } from '@mui/material'
+
+const MainBox = styled(Box)(({theme}) => ({
+    display: 'flex', 
+    justifyContent: 'space-between',
+    [theme.breakpoints.down('md')]:{
+        flexDirection: 'column',
+    }
+}))
 
 const UserPage = () => {
 
@@ -20,10 +28,10 @@ const UserPage = () => {
     console.log(user.favourite)
     return (
         <>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+            <MainBox>
                 <UserData userInfo={UserInfo} />
                 <ProvidersSubscriptions id={user.id} providers={user.providers} />
-            </Box>
+            </MainBox>
             <Favourite data={user.favourite} userId={user.id} />
         </>
     )

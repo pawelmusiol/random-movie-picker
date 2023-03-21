@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useAppContext } from '../../context'
-import { Grid } from "@mui/material"
+import { Grid,  } from "@mui/material"
 import { SingleFilm } from ".."
 import { NoImage } from '../../images'
 import axios from 'axios'
@@ -18,7 +18,7 @@ const Films = ({ listId, films, actions, refs }) => {
 
 
     return (
-        <Grid container gap={2} justifyContent='center'>
+        <Grid container spacing={2} justifyContent='center'>
             {FilmsData.map((film, i) => <SingleFilm listId={listId} inputRef={el => refs.current[i] = el} {...actions} key={film._id} id={film._id} width={250} film={film} />)}
         </Grid>
     )
