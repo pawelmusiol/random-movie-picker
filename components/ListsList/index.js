@@ -14,11 +14,12 @@ const ListsList = () => {
     const UserId = useSelector(state => state.User.id)
     const dispatch = useDispatch()
     const router = useRouter()
+    const user = useSelector(state => state.User)
 
     let lists = useSetLists()
     const deleteList = (id) => {
 
-        axios.delete(`/api/list/${id}`, { headers: { userId: UserId } }).then(res => {
+        axios.delete(`/api/list/${id}?token=${user.token}`).then(res => {
             dispatch({ type: 'SET_LISTS', lists: res.data.lists })
         })
     }

@@ -2,6 +2,7 @@ import dbConnect from "../../../../utils/DbConnent"
 import listModel from "../../../../utils/models/list"
 import { Types } from 'mongoose'
 import jwt from 'jsonwebtoken'
+import { verifyToken } from "../../auth"
 
 const ObjectId = Types.ObjectId
 
@@ -9,12 +10,12 @@ const verifyId = (id) => {
     if (ObjectId.isValid(id)) {
         if (String(new ObjectId(id) === id))
             return id
-        else return verifyToken(id)
+        else return verifyListToken(id)
     }
-    else return verifyToken(id)
+    else return verifyListToken(id)
 }
 
-const verifyToken = (token) => {
+const verifyListToken = (token) => {
     try {
         return jwt.verify(token, 'req').id
     } catch (e) {
@@ -31,18 +32,37 @@ export default async function handler(req, res) {
     switch (method) {
         case "GET":
             try {
+                // Weryfikacja tokena zaproszenia
                 let id = verifyId(query.id)
+                if (!id) {
+                    res.status(404).send({ message: 'List Not Found' })
+                    break;
+                }
                 result = await listModel.findById(id)
                 res.status(200).send({ list: result })
+                break;
             } catch (e) {
                 console.log(e)
-                res.status(404).send({'text': 'Error'})
+                res.status(404).send({ 'text': 'Error' })
+                break;
             }
-            break;
         case "DELETE":
-            result = await listModel.findByIdAndDelete(query.id)
-            let lists = await listModel.find({ 'users._id': headers.userid })
-            console.log(result)
+            let tokenData = verifyToken(query.token)
+            if (tokenData.isExpired) {
+                res.status(401).send({ message: 'Token expired' })
+                break;
+            }
+
+            result = await listModel.findOne({ _id: query.id, 'users._id': tokenData.id }, 'users')
+            let idObj = new ObjectId(tokenData.id)
+            if(!result.users.find(user => idObj.equals(user._id)).isAdmin){
+                res.status(401).send({ message: 'User Is Not Admin' })
+                break
+            }
+            
+            await listModel.findOneAndDelete({ _id: query.id, 'users._id': tokenData.id })
+
+            let lists = await listModel.find({ 'users._id': tokenData.id.toString() })
             res.status(200).send({ lists: lists, text: 'Deleted successfully' })
             break;
     }

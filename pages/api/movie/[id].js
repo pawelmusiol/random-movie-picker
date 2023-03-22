@@ -31,7 +31,7 @@ const getSimilar = async (id, language, type) => {
     for (let i = 0; i < similarMovies.results.length; i++) {
         results.push({
             name: type === 'tv' ? similarMovies.results[i].name : similarMovies.results[i].title,
-            poster: similarMovies.results[i].poster_path,
+            posterPath: similarMovies.results[i].poster_path,
             id: similarMovies.results[i].id,
             mediaType: type
         })

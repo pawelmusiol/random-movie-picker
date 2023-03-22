@@ -1,8 +1,17 @@
-import { Box, Button, Dialog } from '@mui/material'
+import { Box, Button, Dialog, styled } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { SingleFilm } from '../'
 
-
+const PickerBox = styled(Box)(({ theme }) => ({
+    transition: '.5s',
+    display: 'flex',
+    flexDirection: 'row',
+    transform: 'scale(.8)',
+    [theme.breakpoints.down('md')]:{
+        maxHeight: '100vh',
+        minWidth: '100vw'
+    }
+}))
 
 
 
@@ -104,11 +113,11 @@ const Picker = ({ selectedFilms, addToQueue }) => {
                     }
                 }}>
                 {SelectedFilm.left.film.name &&
-                    <Box sx={{ transition: '.5s', display: 'flex', flexDirection: 'row', maxHeight: '70vw' }} >
+                    <PickerBox >
                         <SingleFilm id='left-film' noAction film={SelectedFilm.left.film} width={250} sx={SelectedFilm.left.sx} />
                         <SingleFilm id='main-film' noAction film={SelectedFilm.main.film} width={250} sx={SelectedFilm.main.sx} />
                         <SingleFilm id='right-film' noAction film={SelectedFilm.right.film} width={250} sx={SelectedFilm.right.sx} />
-                    </Box>
+                    </PickerBox>
                 }
             </Dialog>
         </Box>

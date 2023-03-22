@@ -21,7 +21,7 @@ const AddMenu = ({ lists, film, user }) => {
         setAnchorEl(null)
     }
     const AddFilm = (id) => {
-        axios.post(`/api/list/${id}/film`, { user: user, film: film }).then(res => {
+        axios.post(`/api/list/${id}/film?token=${user.token}`, { user: user, film: film }).then(res => {
             setSnackbarState({ open: true, message: res.data.text })
         })
         handleClose()

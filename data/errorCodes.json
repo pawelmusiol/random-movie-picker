@@ -1,0 +1,114 @@
+[
+    {
+        "success": true,
+        "code": 100,
+        "message": {
+            "en": "Logged in successfully",
+            "pl": "Zalogowano Pomyślnie"
+        }
+    },
+    {
+        "success": true,
+        "code": 101,
+        "message": {
+            "en": "Session Active",
+            "pl": "Sesja Aktywna"
+        }
+    },
+    {
+        "success": false,
+        "code": 102,
+        "message": {
+            "en": "Invalid Password",
+            "pl": "Błędne Hasło"
+        }
+    },
+    {
+        "success": false,
+        "code": 103,
+        "message": {
+            "en": "Invalid Login",
+            "pl": "Błędny Login"
+        }
+    },
+    {
+        "success": false,
+        "code": 104,
+        "message": {
+            "en": "Session expired",
+            "pl": "Sesja Wygasła"
+        }
+    },
+    {
+        "success": false,
+        "code": 105,
+        "message": {
+            "en": "Session expired",
+            "pl": "Sesja Wygasła"
+        }
+    },
+    {
+        "success": true,
+        "code": 200,
+        "message": {
+            "en": "Data Fetched",
+            "pl": "Dane Pobrane"
+        }
+    },
+    {
+        "success": true,
+        "code": 201,
+        "message": {
+            "en": "Data Uploaded",
+            "pl": "Dane Wysłane"
+        }
+    },
+    {
+        "success": true,
+        "code": 202,
+        "message": {
+            "en": "Data Updated",
+            "pl": "Dane Zaktualizowane"
+        }
+    },
+    {
+        "success": true,
+        "code": 203,
+        "message": {
+            "en": "Data Deleted",
+            "pl": "Dane Usunięte"
+        }
+    },
+    {
+        "success": false,
+        "code": 400,
+        "message": {
+            "en": "Data Not Fetched",
+            "pl": "Dane Nie zostały Pobrane"
+        }
+    },
+    {
+        "success": false,
+        "code": 201,
+        "message": {
+            "en": "Data Not Uploaded",
+            "pl": "Dane Nie zostały Wysłane"
+        }
+    },
+    {
+        "success": false,
+        "code": 202,
+        "message": {
+            "en": "Data Not Updated",
+            "pl": "Dane Nie zostały Zaktualizowane"
+        }
+    },
+    {
+        "success": false,
+        "code": 203,
+        "message": {
+            "en": "Data Not Deleted",
+            "pl": "Dane Nie zostały Usunięte"
+        }
+    }
+]

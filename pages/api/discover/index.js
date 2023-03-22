@@ -13,13 +13,19 @@ export default async function handler(req, res) {
             else if (query.type === 'tv') {
                 data = await getTV(query)
             }
-            res.send({
-                results: data.results,
-                page: data.page,
-                totalPages: data.total_pages,
-                totalResults: data.total_results,
-                url: url.slice(0, url.length - 1),
-            })
+            console.log(data)
+            if (!data.results) {
+                res.status(404).send({ message: 'No results found' })
+            }
+            else {
+                res.status(200).send({
+                    results: data.results,
+                    page: data.page,
+                    totalPages: data.total_pages,
+                    totalResults: data.total_results,
+                    url: url.slice(0, url.length - 1),
+                })
+            }
             break;
 
         default:

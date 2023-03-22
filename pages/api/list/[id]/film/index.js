@@ -1,6 +1,7 @@
 import axios from "axios"
 import dbConnect from "../../../../../utils/DbConnent"
 import listModel from "../../../../../utils/models/list"
+import { verifyToken } from "../../../auth"
 
 export const getFilms = async (films, language) => {
     return Promise.all(films.map(async (film) => {
@@ -27,18 +28,40 @@ export default async function handler(req, res) {
     switch (method) {
         case "GET":
             try {
-                console.log(query)
-                let result = await listModel.findById(query.id)
+                let tokenData = verifyToken(query.token)
+                if (tokenData.isExpired) {
+                    console.log(tokenData)
+                    res.status(401).send('Token Expired')
+                    break;
+                }
+                let result = await listModel.findOne({ _id: query.id, 'users._id': tokenData.id })
+                if (!result.films.length) {
+                    res.status(204).send()
+                    break;
+                }
                 let FilmsData = await getFilms(result.films, query.language)
-                res.send(FilmsData)
+                res.status(200).send(FilmsData)
             } catch (err) {
-
+                console.log(err)
+                res.status(401).send({ message: 'Not Authorized' })
             }
             break;
         case "POST":
             try {
-                let result = await listModel.updateOne({ _id: query.id }, {
-                    $push: {
+                let tokenData = verifyToken(query.token)
+                if (tokenData.isExpired) {
+                    res.status(401).send('Token Expired')
+                }
+                let filmsInList = await listModel.findOne({ _id: query.id, 'users._id': tokenData.id }, 'films')
+
+                let indexOfFilm = filmsInList.films.findIndex(dbFilm => dbFilm.id === parseInt(body.film.id))
+                if (indexOfFilm > 0) {
+                    res.status(409).send({ message: 'Movie Already In List' })
+                    break;
+                }
+
+                let result = await listModel.updateOne({ _id: query.id, 'users._id': tokenData.id }, {
+                    $addToSet: {
                         'films': {
                             'id': body.film.id,
                             'name': body.film.name,
@@ -50,7 +73,6 @@ export default async function handler(req, res) {
                         }
                     }
                 })
-                console.log(result)
                 res.status(200).send({ text: 'Film Added' })
             } catch (err) {
                 console.log(err)

@@ -43,7 +43,6 @@ const SCardHeader = styled(CardHeader)(({ theme }) => ({
 }))
 
 const SingleFilm = ({ film, width, selectFilm, changePriority, deleteFilm, deselectFilm, sx, inputRef, listId, id = undefined, noAction = false }) => {
-    console.log(film)
     const theme = useTheme()
     const router = useRouter()
     const [Priority, setPriority] = useState(1)
@@ -81,14 +80,17 @@ const SingleFilm = ({ film, width, selectFilm, changePriority, deleteFilm, desel
                                 action={!noAction &&
                                     <>
                                         <IconButton>
-                                            <DeleteImage src={Delete.src} onClick={() => deleteFilm(film._id)} />
+                                            <DeleteImage src={Delete.src} onClick={() => {
+                                                deleteFilm(film._id)
+                                            }
+                                            } />
                                         </IconButton>
                                         {selectFilm && <Switch id={film.tmdbId} inputRef={inputRef} onChange={changeFilmState} />}
                                     </>
                                 }
                             />
                             {selectFilm && <PriorityGroup Priority={Priority} setPriority={onPriorityChange} />}
-                            {film.addedBy && <Typography>Added By {film.addedBy.name}</Typography>}
+                            {(!noAction && film.addedBy) && <Typography>Added By {film.addedBy.name}</Typography>}
                         </Box>
                         <Box
                             sx={{

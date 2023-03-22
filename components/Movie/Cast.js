@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Grid, Box, Typography, Button, styled, Collapse } from '@mui/material'
 import { useRouter } from 'next/router'
+import { NoImage } from '../../images'
 
 const CastImg = styled('img')({
     width: '100%',
@@ -11,7 +12,7 @@ const InnerBox = styled(Box)({
     cursor: 'pointer',
     position: 'relative',
     ':hover': {
-        
+
         '& > div': {
             //transition: '.3s',
             opacity: 1,
@@ -23,9 +24,9 @@ const CoverBox = styled(Box)({
     transition: '.3s',
     background: 'linear-gradient(180deg, rgba(0,0,0,.7) 0%, rgba(0,0,0,0) 100%)',
     opacity: 0,
-    position: 'absolute', 
-    minWidth: '100%', 
-    minHeight: '50%',  
+    position: 'absolute',
+    minWidth: '100%',
+    minHeight: '50%',
 })
 
 const SinglePerson = ({ person, onClick }) => {
@@ -36,8 +37,10 @@ const SinglePerson = ({ person, onClick }) => {
             md={2}
             sx={{ display: 'flex', flexDirection: 'column' }}>
             <InnerBox onClick={() => onClick(person.id)} >
-                <CoverBox/>
-                <CastImg src={"https://image.tmdb.org/t/p/w500" + person.profile_path} />
+                <Box sx={{minHeight: '210px', display: 'flex', justifyContent: 'center',}}>
+                    <CoverBox />
+                    <CastImg src={person.profile_path ? "https://image.tmdb.org/t/p/w500" + person.profile_path : NoImage.src} />
+                </Box>
                 <Typography>{person.character}</Typography>
                 <Typography>{person.name}</Typography>
             </InnerBox>

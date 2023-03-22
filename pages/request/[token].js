@@ -10,31 +10,32 @@ const Request = () => {
     const [AppState, setAppState] = useContext(AppStateContext)
     const router = useRouter()
     const { token } = router.query
-    const User = useSelector(state => state.User)
+    const user = useSelector(state => state.User)
     const [ListData, setListData] =useState({users: [], films:[]})
 
     useEffect(() => {
-        if(!User.token.length){
+        if(!user.token.length){
             console.log('dupa')
             setAppState({...AppState, loginOpen: true})
 
         }
         else {
             AppState.loginOpen = false
+            console.log(token)
             axios.get(`/api/list/${token}`).then(res => {
                 setListData(res.data.list)
             })
         }
-    }, [User])
+    }, [user, token])
     
     const acceptRequest = () => {
-        axios.post(`/api/list/${ListData._id}/user/${User.id}`).then(res => {
+        axios.post(`/api/list/${ListData._id}/user/${user.token}`).then(res => {
             router.push('/list')
         })
     }
 
     return (
-        <Container>{User.token.length ?
+        <Container>{user.token.length ?
             <SingleList list={ListData} acceptRequest={acceptRequest} />
         : 'najpierw się zaloguj'}</Container>
     )

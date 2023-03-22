@@ -1,5 +1,6 @@
 import { Grid, Box, Typography, styled } from '@mui/material'
 import { useRouter } from 'next/router'
+import { Carousel } from '../'
 
 const Image = styled('img')({
     width: '100%',
@@ -36,7 +37,9 @@ const SimilarFilms = ({ movies }) => {
         <>
             {movies.length ?
                 <>
-                    <Typography>Similar Films</Typography>
+                <Carousel title='Similar Films'
+                data={movies} />
+                    {/* <Typography>Similar Films</Typography>
                     <Grid container spacing={1}  >
                         {movies.map((movie, i) =>
                             <MovieGrid
@@ -51,7 +54,7 @@ const SimilarFilms = ({ movies }) => {
                                     <Typography>{movie.name}</Typography>
                                 </TextBox>
                             </MovieGrid>)}
-                    </Grid>
+                    </Grid> */}
                 </> : <></>
             }
         </>

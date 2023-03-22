@@ -38,8 +38,9 @@ const Carousel = ({ data, title, type, voteAverage }) => {
     const MainBoxRef = useRef()
     let interval = mobile ? 2 : 6
 
-    const goToMovie = (id) => {
-        router.push(`/${type}/${id}`)
+    const goToMovie = (movie) => {
+        if (movie.mediaType) router.push(`/${movie.mediaType}/${movie.id}`)
+        else router.push(`/${type}/${movie.id}`)
     }
 
     const moveDiv = (direction) => {
@@ -79,7 +80,7 @@ const Carousel = ({ data, title, type, voteAverage }) => {
                     width: data.length * Math.floor(BoxWidth / interval) + 40 + 'vw'
                 }}
             >
-                {data.map(movie => <SingleMedia onClick={() => goToMovie(movie.id)} movie={movie} key={movie.id} width={Math.floor(BoxWidth / interval)} />)}
+                {data.map(movie => <SingleMedia onClick={() => goToMovie(movie)} movie={movie} key={movie.id} width={Math.floor(BoxWidth / interval)} />)}
             </CarouselOuter>
             <Arrow
                 onClick={() => moveDiv('right')}

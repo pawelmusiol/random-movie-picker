@@ -156,6 +156,9 @@ const ActionMenu = ({ onDelete, onRequest, acceptRequest, isPrivate, onSwitchPri
 }
 
 const SingleList = ({ list, onDelete, onRequest, acceptRequest, onSwitchPrivacy }) => {
+    
+    
+    
     let OwnerName = list.users.find(user => user.isOwner === true)?.name ? list.users.find(user => user.isOwner === true)?.name : 'Unknown'
     return (
         <Grid item xs={12} md={4} >

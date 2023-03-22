@@ -7,8 +7,11 @@ import { createSelector } from 'reselect'
 import { ListInfo, MoviePicker } from '../../components'
 import { useAppContext } from '../../context'
 import { SimilarFilms } from '../../components'
+import useSetLists from '../../components/ListsList/useSetLists'
 
 const SingleList = () => {
+
+    useSetLists()
     const router = useRouter()
     const dispatch = useDispatch()
     const { id } = router.query
@@ -37,6 +40,7 @@ const SingleList = () => {
                 setSimilarFilmsData(res.data)
             })
         }
+
     }, [id, List])
 
 

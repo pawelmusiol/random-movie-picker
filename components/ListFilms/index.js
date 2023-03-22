@@ -1,24 +1,24 @@
 import { useState, useEffect, useRef } from 'react'
 import { Box, Switch, Typography, Checkbox, FormControlLabel } from "@mui/material"
 import { Picker, Films, FilmsQueue } from '..'
-import { useDispatch } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { useAppContext } from '../../context'
 import axios from 'axios'
 
 const MoviePicker = ({ listId, films }) => {
-    console.log(films)
     const dispatch = useDispatch()
     const refs = useRef([])
     const [SelectedFilms, setSelectedFilms] = useState([])
     const [Queue, setQueue] = useState([])
     const [OnlyQueue, setOnlyQueue] = useState(false)
     const [AppState] = useAppContext()
+    const user = useSelector(state => state.User)
     useEffect(() => {
         refs.current = refs.current.slice(0, films.length)
     }, [films])
 
     useEffect(() => {
-        axios.get(`/api/list/${listId}/film/queue?language=${AppState.language}`).then(res => {
+        axios.get(`/api/list/${listId}/film/queue?language=${AppState.language}&token=${user.token}`).then(res => {
             setQueue(res.data)
         })
     }, [listId])
@@ -45,7 +45,12 @@ const MoviePicker = ({ listId, films }) => {
     }
 
     const deleteFilm = (id) => {
-        axios.delete(`/api/list/${listId}/film/${id}`).then(res => {
+        setSelectedFilms(Films => {
+            let x = Films.filter(x => x._id !== id)
+            return x
+        })
+        console.log(SelectedFilms)
+        axios.delete(`/api/list/${listId}/film/${id}?token=${user.token}`).then(res => {
             console.log(res.data)
             dispatch({ type: 'UPDATE_LIST', list: res.data })
         })
@@ -53,30 +58,37 @@ const MoviePicker = ({ listId, films }) => {
 
     const switchAllFilms = (e) => {
         refs.current.forEach((input, i) => {
-            let inQueue = Queue.map(q => {
-                if(q._id !== input.id){
-                    return q.tmdbId
-                }
-            })
-            console.log(Queue)
+            console.log(typeof Queue)
             setTimeout(() => {
-                if (e.target.checked && OnlyQueue) {
-                    console.log(parseInt(input.id))
-                    console.log(inQueue[0])
-                    console.log(inQueue.includes(parseInt(input.id)))
+                if (input) {
+                    if (e.target.checked && OnlyQueue) {
 
-                    if (input && !input.checked && !inQueue.includes(parseInt(input.id))) {
-                        input.click()
+                        let inQueue = Queue ? Queue.map(q => {
+                            console.log(input)
+                            if (input) {
+                                if (q._id !== input.id) {
+                                    return q.tmdbId
+                                }
+                            }
+                        }) : []
+
+                        console.log(parseInt(input.id))
+                        console.log(inQueue[0])
+                        console.log(inQueue.includes(parseInt(input.id)))
+
+                        if (input && !input.checked && !inQueue.includes(parseInt(input.id))) {
+                            input.click()
+                        }
                     }
-                }
-                else if (e.target.checked) {
-                    if (input && !input.checked) {
-                        input.click()
+                    else if (e.target.checked) {
+                        if (input && !input.checked) {
+                            input.click()
+                        }
                     }
-                }
-                else if (input && !e.target.checked) {
-                    if (input.checked) {
-                        input.click()
+                    else if (input && !e.target.checked) {
+                        if (input.checked) {
+                            input.click()
+                        }
                     }
                 }
             }, i * 10)
@@ -91,7 +103,7 @@ const MoviePicker = ({ listId, films }) => {
             name: film.name,
             type: film.type,
         }
-        axios.post(`/api/list/${listId}/film/queue?language=${AppState.language}`, { film: modifiedFilm }).then(res => {
+        axios.post(`/api/list/${listId}/film/queue?language=${AppState.language}&token=${user.token}`, { film: modifiedFilm }).then(res => {
             console.log(res.data)
             setQueue(res.data)
         })

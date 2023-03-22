@@ -28,15 +28,15 @@ const handler = async (req, res) => {
         case 'GET':
             console.log(query)
             try {
-                let verifiedToken = jwt.verify(query.token, 'dupa')
+                let verifiedToken = verifyToken(query.token)
                 console.log(verifiedToken)
-                if (Date.now() > verifiedToken.exp) {
+                if (verifiedToken.isExpired) {
                     res.status(401).send({ text: "Token Expired", code: 4 })
                 }
-                else if (Date.now() < verifiedToken.exp) {
+                else if (!verifiedToken.isExpired) {
                     let data = (await getUserData(verifiedToken.id))
                     console.log(data)
-                    res.status(200).send({ text: "Token Active", code: 1, name: data.name, id: verifiedToken.id, providers: data.providers, favourite: data.favourite })
+                    res.status(200).send({ text: "Token Active", name: data.name, id: verifiedToken.id, providers: data.providers, favourite: data.favourite })
                 }
             } catch (error) {
                 console.log(error)
@@ -46,9 +46,23 @@ const handler = async (req, res) => {
     }
 }
 
+export const verifyToken = (token) => {
+    try {
+        let tokenData = jwt.verify(token, 'dupa')
+        return {
+            ...tokenData,
+            isExpired: Date.now() > tokenData.exp,
+        }
+    } catch (error) {
+        return {
+            isExpired: true,
+        }
+    }
+}
+
 const getUserData = async (id) => {
     return await userModel.findById(id, 'name providers favourite')
-    
+
 }
 
 const getPassword = async (name) => {
