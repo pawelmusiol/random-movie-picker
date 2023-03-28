@@ -32,13 +32,13 @@ const ListsList = () => {
             console.log(currentUrl)
         }
         console.log('dupa')
-        axios.get(`/api/list/${id}/request`).then(res => {
+        axios.get(`/api/list/${id}/request?token=${user.token}`).then(res => {
             setRequestLink(currentUrl + 'request/' + res.data.token)
             setDialogOpen(true)
         })
     }
     const switchPrivacy = (id, privacy) => {
-        axios.put(`/api/list/${id}/privacy`, { id: id, privacy: privacy, userId: UserId }).then(
+        axios.put(`/api/list/${id}/privacy?token=${user.token}`, { id: id, privacy: privacy, userId: UserId }).then(
             res => dispatch({ type: 'SET_LISTS', lists: res.data.lists })
         )
 

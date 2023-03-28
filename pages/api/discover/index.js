@@ -14,7 +14,7 @@ export default async function handler(req, res) {
                 data = await getTV(query)
             }
             console.log(data)
-            if (!data.results) {
+            if (!data.results || data.results.length === 0) {
                 res.status(404).send({ message: 'No results found' })
             }
             else {

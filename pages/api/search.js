@@ -11,6 +11,12 @@ export default async function handler(req, res) {
         case "GET":
 
             let data = await getMovies(query)
+            console.log(data)
+            if (!data.results || data.results.length === 0) {
+            res.status(404).send({message: "No movies found"})
+            break;
+            }
+            
             res.status(200).send({ results: data.results, page: data.page, totalPages: data.total_pages, totalResults: data.total_results, url: `api/search?query=${query.query}&type=${query.type}&page=` })
             break;
 
@@ -41,5 +47,3 @@ const getSingleMovieProviders = async (results, type, language) => {
         }
     }))
 }
-
-const SearchTypes = ['all', 'movie', 'tv']

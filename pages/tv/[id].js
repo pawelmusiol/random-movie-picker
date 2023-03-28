@@ -24,6 +24,8 @@ const Movie = () => {
                 })
                 setData(res.data)
 
+            }).catch(err => {
+                router.push('/404')
             })
         }
     }, [router])

@@ -17,6 +17,7 @@ const SingleList = () => {
     const { id } = router.query
     const [SimilarFilmsData, setSimilarFilmsData] = useState({})
     const [AppContext] = useAppContext()
+    const user = useSelector(state => state.User)
 
     const selectListById = createSelector(
         state => state.Lists,
@@ -24,6 +25,7 @@ const SingleList = () => {
     )
 
     const List = useSelector(selectListById)[0]
+        console.log(List)
 
     useEffect(() => {
         if (List) {
@@ -36,12 +38,21 @@ const SingleList = () => {
                 }),
                 language: AppContext.language
             }
-            axios.post(`/api/list/${id}/film/similar`, data).then(res => {
+            axios.post(`/api/list/${id}/film/similar?token=${user.token}`, data).then(res => {
                 setSimilarFilmsData(res.data)
             })
         }
+        else if(router.isReady && user.token){
+            axios.head(`/api/list/${id}?token=${user.token}`).then(res => {
 
-    }, [id, List])
+            }).catch(err => {
+                if(err.response.status === 404) {
+                    router.push('/404')
+                }
+            })
+        }
+
+    }, [id, List, user])
 
 
     return (

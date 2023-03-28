@@ -44,11 +44,11 @@ const CreateList = ({open, onClose, addToList}) => {
     const [FormData, setFormData] = useState({ name: '', private: true })
     const [Name, setName] = useState('')
 
-    const User = useSelector(state => state.User)
+    const user = useSelector(state => state.User)
 
     const handleSubmit = () => {
-        if (User)
-            axios.post('/api/list', { ...FormData, userId: User.id }).then(res => {
+        if (user)
+            axios.post(`/api/list?token=${user.token}`, { ...FormData, userId: user.id }).then(res => {
                 setSnackbarState({ open: true, message: res.data.text });
                 dispatch({ type: 'SET_LISTS', lists: res.data.lists })
                 if(addToList) {

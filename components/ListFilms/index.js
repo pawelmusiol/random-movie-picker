@@ -109,7 +109,7 @@ const MoviePicker = ({ listId, films }) => {
         })
     }
     const RemoveFromQueue = (id) => {
-        axios.delete(`/api/list/${listId}/film/queue?filmId=${id}&language=${AppState.language}`).then(res => {
+        axios.delete(`/api/list/${listId}/film/queue?filmId=${id}&language=${AppState.language}&token=${user.token}`).then(res => {
             console.log(res.data)
             setQueue(res.data)
         })

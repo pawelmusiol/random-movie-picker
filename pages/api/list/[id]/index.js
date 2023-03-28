@@ -30,6 +30,30 @@ export default async function handler(req, res) {
     let result = {}
 
     switch (method) {
+        case 'HEAD':
+            try {
+                let tokenData = verifyToken(query.token)
+                if (tokenData.isExpired){
+                    res.status(401).send()
+                    break;
+                }
+                else {
+                    result = await listModel.findById(query.id)
+                    console.log('dupa')
+                    console.log(result)
+                    if(!result){
+                        res.status(404).send()
+                        break;
+                    }
+                    res.status(200).send()
+                    break
+                }
+
+            } catch (error) {
+                console.log(error)
+                res.status(404).send()
+            }
+            break;
         case "GET":
             try {
                 // Weryfikacja tokena zaproszenia

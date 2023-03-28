@@ -4,6 +4,7 @@ import axios from "axios";
 import { useSelector } from "react-redux";
 import { useAppContext } from '../../context';
 import { useGenres } from '../FilmSearch';
+import CustomSnackbar from '../CustomSnackbar';
 
 const Types = [
     {
@@ -72,7 +73,7 @@ rok produkcji
 obsada
 watch providers
 */
-const SearchForm = ({setResults }) => {
+const SearchForm = ({ setResults }) => {
     const [AppContext] = useAppContext()
     const [Type, setType] = useState('movie')
     const [Genres, setGenres] = useState([])
@@ -81,20 +82,13 @@ const SearchForm = ({setResults }) => {
     const YearsArray = useYears()
     const [Providers, setProviders, ProvidersArray] = useProviders(AppContext.language)
     const [CastArray, SelectedCast, setSelectedCast, setText] = useCast(AppContext.language)
+    const [SnackbarState, setSnackbarState] = useState({open: false, message: '', error: false})
 
     const GenresArray = useGenres(AppContext.language, Type)
 
-    console.log(Providers)
 
     const onSearch = () => {
-        console.log({
-            Type: Type,
-            Genre: Genres,
-            SafeSearch: !SafeSearch,
-            Years: Years,
-            Providers: ProvidersArray,
-            Cast: SelectedCast,
-        })
+
         let queryData = [
             `type=${Type}`,
             'with_genres=' + Genres.map(genre => genre.id).join('.'),
@@ -108,7 +102,15 @@ const SearchForm = ({setResults }) => {
         ]
         console.log(queryData.join('&'))
         axios.get('/api/discover?' + queryData.join('&')).then(res => {
-            setResults({...res.data, type: Type})
+            setResults({ ...res.data, type: Type })
+            setSnackbarState({open: false})
+        }).catch(err => {
+            setResults({})
+            setSnackbarState({
+                open: true,
+                message: err.response.data.message,
+                error: true
+            })
         })
     }
 
@@ -209,6 +211,7 @@ const SearchForm = ({setResults }) => {
                 </FormControl>
             }
             <Button onClick={onSearch}>Search</Button>
+            <CustomSnackbar snackbarState={SnackbarState} setSnackbarState={setSnackbarState} />
         </Box>
     )
 }

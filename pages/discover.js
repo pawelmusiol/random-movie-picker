@@ -8,17 +8,19 @@ export default function Home() {
   const [Page, setPage] = useState(1)
 
   useEffect(() => {
-    axios.get(Results.url + Page).then(result => {
+    if (Results.url) {
+      axios.get(Results.url + Page).then(result => {
         console.log(result);
         setResults({ ...result.data, type: Results.type });
-    })
-}, [Page])
+      })
+    }
+  }, [Page])
 
   return (
     <>
-    <DiscoverSearchForm setResults={setResults}/>
-    <SearchResults results={Results.results} type={Results.type} />
-    <ResultPagination page={Page} totalPages={Results.totalPages} changePage={(e, value) => setPage(value)} />
+      <DiscoverSearchForm setResults={setResults} />
+      <SearchResults results={Results.results} type={Results.type} />
+      <ResultPagination page={Page} totalPages={Results.totalPages} changePage={(e, value) => setPage(value)} />
     </>
   )
 }

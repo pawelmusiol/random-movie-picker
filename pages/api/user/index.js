@@ -16,11 +16,13 @@ export default async function handler(req, res) {
                 password: await HashPassword(body.password)
             }).then(result => {
                 res.status(204).send({text: 'User added successfully'})
+                return 0
             }).catch(err => {
-                console.log(err)
                 if (err.code === 11000) {
-                    res.status(400).send({code: 1, type: "duplicate", errorRow: Object.keys(err.keyPattern)[0]})
+                    res.status(409).send({code: 1, type: "duplicate", errorRow: Object.keys(err.keyPattern)[0]})
+                    return 0
                 }
+                
                 res.status(400).send({code: 2, type: "unknown error"})
             })
             break;

@@ -8,14 +8,15 @@ const People = ({ }) => {
 
     const router = useRouter()
     const { id } = router.query
-    const [AppContext, setAppContext] = useAppContext()
+    const [AppContext, setAppContext, openSnackbar] = useAppContext()
     const [Data, setData] = useState({})
     useEffect(() => {
         if (router.isReady) {
             axios.get(`/api/people/${id}?language=${AppContext.language}`).then(res => {
                 setData(res.data)
-            }
-            )
+            }).catch(err => {
+                router.push('/404')
+            })
         }
     }, [id])
 

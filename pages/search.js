@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { FilmSearch, SearchResults, ResultPagination } from "../components";
+import { Box } from "@mui/material";
 import { useAppContext } from "../context";
 import axios from "axios";
 
@@ -10,10 +11,12 @@ const Search = () => {
     const [AppState] = useAppContext()
 
     useEffect(() => {
-        axios.get(Results.url + Page + '&language=' + AppState.language).then(result => {
-            console.log(result);
-            setResults({ ...result.data, type: Results.type });
-        })
+        if (Results.url) {
+            axios.get(Results.url + Page + '&language=' + AppState.language).then(result => {
+                console.log(result);
+                setResults({ ...result.data, type: Results.type });
+            })
+        }
     }, [Page])
 
     const handleSearch = e => {
@@ -22,11 +25,11 @@ const Search = () => {
     }
 
     return (
-        <>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             <FilmSearch onSearch={handleSearch} />
             <SearchResults results={Results.results} type={Results.type} />
             <ResultPagination page={Page} totalPages={Results.totalPages} changePage={(e, value) => setPage(value)} />
-        </>
+        </Box>
     )
 }
 

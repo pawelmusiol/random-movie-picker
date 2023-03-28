@@ -9,15 +9,24 @@ export default async function handler(req, res) {
 
     switch (method) {
         case "GET":
-            console.log(query)
-            let data = {
-                providers: await getProviders(query.id, query.language, query.type),
-                ...(await getDetails(query.id, query.language, query.type)),
-                media: await getMedia(query.id, query.language, query.type),
-                credits: await getCredits(query.id, query.language, query.type),
-                similarMovies: await getSimilar(query.id, query.language, query.type),
+            try {
+                let data = {
+                    ...(await getDetails(query.id, query.language, query.type)),
+                    providers: await getProviders(query.id, query.language, query.type),
+                    media: await getMedia(query.id, query.language, query.type),
+                    credits: await getCredits(query.id, query.language, query.type),
+                    similarMovies: await getSimilar(query.id, query.language, query.type),
+                }
+                res.status(200).send(data)
             }
-            res.status(200).send(data)
+            catch (err) {
+                if (err.response.status === 404) {
+                    res.status(404).send({ message: 'Film Not Found' })
+                }
+                else {
+                    res.status(500).send({ message: 'Something Went Wrong' })
+                }
+            }
             break;
 
         default:

@@ -8,16 +8,25 @@ export default async function handler(req, res) {
 
     switch (method) {
         case "GET":
-            let data = {
-                details: await getDetails(query),
-                credits: await getCredits(query)
+            try {
+                let data = {
+                    details: await getDetails(query),
+                    credits: await getCredits(query)
+                }
+                res.status(200).send(data)
+            } catch (err) {
+                if (err.response.status === 404) {
+                    res.status(404).send({ message: 'Person Not Found' })
+                }
+                else {
+                    res.status(500).send({ message: 'Something Went Wrong' })
+                }
             }
-            res.send(data)
             break
-        case "POST":
+        /* case "POST":
             addToFavourites(query.id, body.userId)
 
-            res.send('dupa') 
+            res.send('dupa') */
     }
 }
 
@@ -25,12 +34,12 @@ const addToFavourites = async (id, userId) => {
     let result = await userModel.findByIdAndUpdate(
         userId,
         {
-            $push: {
+            $addToSet: {
                 'favourite.people': id
             }
         }
     )
-    console.log(result)
+    return result
 }
 
 const getDetails = async (query) => {
@@ -41,8 +50,8 @@ const getDetails = async (query) => {
 const getCredits = async (query) => {
     let movieResult = (await axios.get(`https://api.themoviedb.org/3/person/${query.id}/movie_credits?language=${query.language}&api_key=${process.env.TMDB_API_KEY}`)).data
     let tvResult = (await axios.get(`https://api.themoviedb.org/3/person/${query.id}/tv_credits?language=${query.language}&api_key=${process.env.TMDB_API_KEY}`)).data
-    
-    
+
+
     return {
         movie: getMovieData(movieResult),
         tv: getMovieData(tvResult)
@@ -53,8 +62,8 @@ const getMovieData = (movies) => {
     let voteAverage = 0
     let averageBottom = 0
     let moviesData = movies.cast.map(movie => {
-        voteAverage+= movie.vote_average * movie.vote_count,
-        averageBottom += movie.vote_count
+        voteAverage += movie.vote_average * movie.vote_count,
+            averageBottom += movie.vote_count
         return {
             id: movie.id,
             title: movie.title ? movie.title : movie.name,
@@ -64,8 +73,8 @@ const getMovieData = (movies) => {
             backdropPath: movie.backdrop_path,
         }
     })
-    moviesData = moviesData.sort((a,b) => {
-        if(a.voteAverage > b.voteAverage) return -1
+    moviesData = moviesData.sort((a, b) => {
+        if (a.voteAverage > b.voteAverage) return -1
     })
     return {
         voteAverage: voteAverage / averageBottom,

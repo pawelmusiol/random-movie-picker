@@ -5,6 +5,7 @@ import { useAppContext } from "../context"
 import accents from 'remove-accents'
 import { useDispatch, useSelector } from 'react-redux'
 import { useRouter } from "next/router"
+import CustomSnackbar from "./CustomSnackbar"
 
 
 const Types = [
@@ -19,7 +20,7 @@ const Types = [
 
 ]
 
-const useSearch = (Name, Type, Genre, Language, onSearch,) => {
+const useSearch = (Name, Type, Genre, Language, onSearch, setSnackbarState) => {
 
     const router = useRouter()
     const [Error, setError] = useState({ name: false, type: false })
@@ -52,23 +53,32 @@ const useSearch = (Name, Type, Genre, Language, onSearch,) => {
         return true
     }
 
-    const onClick = (Type, Genre) => {
+    const onChange = (Type, Genre) => {
         router.replace({
             pathname: router.pathname,
             query: { ...router.query, name: Name, type: Type }
         })
         if (validateInputs()) {
             let uri = accents.remove(`/api/search?query=${Name}&type=${Type ? Type : 'multi'}&genre=${Genre}&page=1&language=${Language}`)
+
             axios.get(uri).then((res) => {
                 res.data.results = getProviders(res.data.results)
                 onSearch({ ...res.data, type: Type, genre: Genre })
-            }).catch((err) => console.log(err))
+                setSnackbarState({open: false})
+            }).catch((err) => {
+                onSearch({})
+                setSnackbarState({
+                    open: true,
+                    message: err.response.data.message,
+                    error: true
+                })
+            })
         }
         else {
             onSearch({ Results: {} })
         }
     }
-    return [onClick, Error]
+    return [onChange, Error]
 }
 
 export const useGenres = (Language, Type) => {
@@ -87,17 +97,17 @@ const FilmSearch = ({ onSearch }) => {
     const router = useRouter()
     const [AppContext, setAppContext] = useAppContext()
     const [Type, setType] = useState("movie")
-
+    const [SnackbarState, setSnackbarState] = useState({ open: false, message: '', error: false })
     const [FilmName, setFilmName] = useState(router.query.name)
-    
+
 
     const GenresList = useGenres(AppContext.language, Type)
     const [Genre, setGenre] = useState("")
-    const [Search, Error] = useSearch(FilmName, Type, Genre, AppContext.language, onSearch)
+    const [Search, Error] = useSearch(FilmName, Type, Genre, AppContext.language, onSearch, setSnackbarState)
 
     useEffect(() => {
         Search(Type, Genre)
-    }, [FilmName, Type,Genre])
+    }, [FilmName, Type, Genre])
 
     return (
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
@@ -108,14 +118,15 @@ const FilmSearch = ({ onSearch }) => {
                     {Types.map((type, index) => <MenuItem value={type.value} key={index}>{type.text}</MenuItem>)}
                 </Select>
             </FormControl>
-            <FormControl fullWidth>
+            {/* <FormControl fullWidth>
                 <InputLabel id="search-form-genre">Genre</InputLabel>
                 <Select value={Genre} onChange={e => { setGenre(e.target.value) }} label="genre" labelId="search-form-genre">
                     <MenuItem value={0}>All</MenuItem>
                     {GenresList.map((genre, index) => <MenuItem value={genre.id} key={index}>{genre.name}</MenuItem>)}
                 </Select>
-            </FormControl>
+            </FormControl> */}
             {/* <Button onClick={() => onClick(Type)}>Szukaj</Button> */}
+            <CustomSnackbar snackbarState={SnackbarState} setSnackbarState={setSnackbarState} />
         </Box>
     )
 }

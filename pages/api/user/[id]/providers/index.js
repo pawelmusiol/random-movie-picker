@@ -1,8 +1,8 @@
 import axios from 'axios'
-
-import dbConnect from "../../../../utils/DbConnent"
-import userModel from "../../../../utils/models/user"
+import dbConnect from "../../../../../utils/DbConnent"
+import userModel from "../../../../../utils/models/user"
 import bcrypt from 'bcrypt'
+import { verifyToken } from '../../../auth'
 
 export default async function handler(req, res) {
     const { method, query, body } = req
@@ -11,17 +11,30 @@ export default async function handler(req, res) {
 
     switch (method) {
         case "GET":
-            let data = {
-                //userProviders: await getUserProviders(query.id),
-                availableProviders: await getProviders(query.language)
+            try {
+                let data = {
+                    //userProviders: await getUserProviders(query.id),
+                    availableProviders: await getProviders(query.language)
+                }
+                res.status(200).send(data)
+
+            } catch (error) {
+                res.status(500).send({ message: 'Something Went Wrong' })
             }
-            res.send(data)
             break;
         case "POST":
-
-            await addProvider(query.id, body.provider)
-            let result = await userModel.findById(query.id) 
-            res.send(result)
+            let tokenData = verifyToken(query.token)
+            if (tokenData.isExpired) {
+                res.status(401).send({ message: 'Token expired' })
+                break
+            }
+            try {
+                await addProvider(query.id, body.provider)
+                let result = await userModel.findById(query.id)
+                res.status(201).send(result)
+            } catch (err) {
+                res.status(500).send({ message: 'Something Went Wrong' })
+            }
             break;
         default:
             break;
@@ -31,7 +44,7 @@ export default async function handler(req, res) {
 const addProvider = async (id, provider) => {
     let result = await userModel.findByIdAndUpdate(
         id,
-        { $push: { providers: provider } }
+        { $addToSet: { providers: provider } }
     )
     return result;
 }

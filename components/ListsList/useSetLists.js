@@ -4,15 +4,15 @@ import axios from 'axios'
 
 const useSetLists = (refresh) => {
 
-    let userId = useSelector(state => state.User.id)
+    let token = useSelector(state => state.User.token)
     const dispatch = useDispatch()
     useEffect(() => {
-        if (userId) {
-            axios.get(`/api/list?userid=${userId}`).then(res => {
+        if (token) {
+            axios.get(`/api/list?token=${token}`).then(res => {
                 dispatch({ type: 'SET_LISTS', lists: res.data.lists })
             })
         }
-    }, [userId, refresh])
+    }, [token, refresh])
 
     return useSelector(state => state.Lists)
 }

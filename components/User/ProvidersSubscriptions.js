@@ -38,11 +38,17 @@ const ProvidersSubscriptions = ({ id, providers }) => {
     const handleSubmit = () => {
         let index = Data.userProviders.findIndex(provider => provider.id === SelectedProvider)
         if (index === -1) {
-            axios.post(`/api/user/${id}/providers`, { provider: SelectedProvider }).then(res => {
+            axios.post(`/api/user/${id}/providers?token=${user.token}`, { provider: SelectedProvider }).then(res => {
                 console.log(res.data)
                 dispatch({ type: 'SET_PROVIDERS', providers: res.data.providers })
             })
         }
+    }
+
+    const handleDelete = (providerId) => {
+        axios.delete(`/api/user/${id}/providers/${providerId}?token=${user.token}`).then(res => {
+            dispatch({ type: 'SET_PROVIDERS', providers: res.data.providers })
+        })
     }
 
     return (
@@ -50,7 +56,8 @@ const ProvidersSubscriptions = ({ id, providers }) => {
             {Data.userProviders &&
                 <ProvidersGrid container>
                     {Data.userProviders.map((provider, i) =>
-                        <Grid item xs={3} md={4} key={`user-provider-${i}`}>
+                        <Grid item xs={3} md={4} key={`user-provider-${i}`} sx={{position: 'relative'}}>
+                            <Button onClick={() => handleDelete(provider.id)} style={{position: 'absolute', top:0, right: 0}}>x</Button>
                             <img style={{ minWidth: 60, maxWidth: 60 }} src={"https://image.tmdb.org/t/p/w500" + provider.logoPath} />
                         </Grid>
                     )}
@@ -63,7 +70,10 @@ const ProvidersSubscriptions = ({ id, providers }) => {
                     value={SelectedProvider}
                     onChange={e => setSelectedProvider(e.target.value)}
                 >
-                    {Data.ready && Data.availableProviders.map(provider =>
+                    {Data.ready && Data.availableProviders.filter(provider => {
+                        console.log(!Data.userProviders.findIndex(uProvider => uProvider.id === provider.id))
+                        return Data.userProviders.findIndex(uProvider => uProvider.id === provider.id) < 0
+                    }).map(provider =>
                         <MenuItem
                             key={`available-provider-${provider.id}`}
                             value={provider.id}

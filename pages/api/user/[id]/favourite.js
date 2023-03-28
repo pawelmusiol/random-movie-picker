@@ -1,26 +1,54 @@
 import dbConnect from "../../../../utils/DbConnent";
 import userModel from "../../../../utils/models/user";
 import axios from "axios";
+import { verifyToken } from "../../auth";
 
 export default async function handler(req, res) {
     const { method, query, body } = req
     await dbConnect()
 
+    let tokenData
+
     switch (method) {
         case "GET":
-            let result = await userModel.findById(query.id).select('favourite')
-            let favourite = await getFavouritesFromDB(result.favourite)
-            console.log(favourite)
-            res.send(favourite)
+            try {
+                tokenData = verifyToken(query.token)
+
+                if (tokenData.isExpired) {
+                    res.status(401).send({ message: "Token expired" })
+                    break
+                }
+                console.log(query.id)
+                let result = await userModel.findById(query.id).select('favourite')
+                let favourite = await getFavouriteFromDB(result.favourite)
+                res.status(200).send(favourite)
+            } catch (err) {
+                res.status(404).send({ message: "User not Found" })
+            }
             break
         case "POST":
-            await addToFavourites(body.newId, body.type, query.id)
+            try {
+                tokenData = verifyToken(query.token)
+                if (tokenData.isExpired) {
+                    res.status(401).send({ message: "Token expired" })
+                    break
+                }
+                if (tokenData.id !== query.id) {
+                    res.status(401).send({ message: "Profile Id and Token Missmatch" })
+                    break
+                }
 
-            res.send('dupa')
+                await addToFavourite(body.newId, body.type, query.id)
+
+                res.status(201).send({ message: "Added to Favourite" })
+            } catch (err) {
+                console.log(err)
+                res.status(500).send({ message: "Something Went Wrong" })
+            }
     }
 }
 
-const getFavouritesFromDB = async (data) => {
+const getFavouriteFromDB = async (data) => {
 
     return {
         people: await processData(data.people, 'person'),
@@ -42,7 +70,7 @@ const processData = async (data, type) => {
 
 }
 
-const addToFavourites = async (id, type, userId) => {
+const addToFavourite = async (id, type, userId) => {
 
     let newKey = 'favourite.' + type
     console.log(newKey)

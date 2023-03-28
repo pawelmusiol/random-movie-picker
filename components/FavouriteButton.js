@@ -13,7 +13,7 @@ const FavouriteButton = ({id, type}) => {
             setContext({...Context, loginOpen: true})
         }
         else {
-            axios.post('/api/user/'+user.id+'/favourite', {newId: id, type: type}).then(res => {
+            axios.post(`/api/user/${user.id}/favourite?token=${user.token}`, {newId: id, type: type}).then(res => {
                 console.log(res)
             })
         }

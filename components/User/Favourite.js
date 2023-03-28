@@ -3,13 +3,15 @@ import { Carousel } from '../'
 import axios from "axios";
 import { useState, useEffect } from "react";
 
-const Favourite = ({ userId }) => {
+const Favourite = ({ userId, token }) => {
     const [Data, setData] = useState({})
     useEffect(() => {
-        axios.get(`/api/user/${userId}/favourite`).then(res => {
-            setData(res.data)
-        })
-    },[userId])
+        if (typeof userId !== 'undefined' && typeof token !== 'undefined') {
+            axios.get(`/api/user/${userId}/favourite?token=${token}`).then(res => {
+                setData(res.data)
+            })
+        }
+    }, [userId, token])
 
     return (
         <Box>

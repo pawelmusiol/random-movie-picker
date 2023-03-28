@@ -17,7 +17,7 @@ const Movie = () => {
 
     const router = useRouter()
     const [Data, setData] = useState({ ready: false })
-    const [AppState] = useAppContext()
+    const [AppState, setAppState] = useAppContext()
 
     useEffect(() => {
         const { id } = router.query
@@ -26,8 +26,9 @@ const Movie = () => {
                 res.data.info.director = res.data.credits.crew.filter(person => person.job === "Director")
                 res.data.details.id = id
                 setData({ ...res.data, ready: true })
-
-            })
+            }).catch(err => {
+                    router.push('/404')
+                })
         }
     }, [router])
 

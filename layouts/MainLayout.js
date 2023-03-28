@@ -1,11 +1,12 @@
 import { Container, CssBaseline, useTheme, useMediaQuery } from '@mui/material'
-import { TopBar } from '../components'
+import { CustomSnackbar, NotFound, TopBar } from '../components'
 import { useCookies } from 'react-cookie'
 import axios from 'axios'
 import { useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 import { useRouter } from 'next/router'
 import { createTheme, ThemeProvider } from '@mui/material'
+import { useAppContext } from '../context'
 
 const theme = createTheme({
     palette: {
@@ -31,7 +32,7 @@ const theme = createTheme({
 const MainLayout = ({ children }) => {
 
     const AuthPages = [
-        'user',
+        //'user',
         'list',
     ]
     const checkForAuth = (router) => {
@@ -48,7 +49,8 @@ const MainLayout = ({ children }) => {
     const router = useRouter()
     const uTheme = useTheme()
     const mobile = useMediaQuery(uTheme.breakpoints.down('md'))
-
+    const [AppState] = useAppContext()
+    console.log(AppState)
     useEffect(() => {
         if (cookies.token) {
             axios.get(`/api/auth?token=${cookies.token}`).then(res => {
@@ -82,6 +84,7 @@ const MainLayout = ({ children }) => {
                 sx={{ marginTop: (router.pathname === '/' && mobile) ? 23 : 10, }}>
                 <TopBar />
                 {children}
+                {/* <CustomSnackbar /> */}
             </Container>
         </ThemeProvider>
     )
