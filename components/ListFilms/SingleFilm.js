@@ -42,7 +42,7 @@ const SCardHeader = styled(CardHeader)(({ theme }) => ({
     }
 }))
 
-const SingleFilm = ({ film, width, selectFilm, changePriority, deleteFilm, deselectFilm, sx, inputRef, listId, id = undefined, noAction = false }) => {
+const SingleFilm = ({ film, width, selectFilm, changePriority, deleteFilm, deselectFilm, sx, inputRef, listId, id = undefined, noAction = false, noClick = false }) => {
     const theme = useTheme()
     const router = useRouter()
     const [Priority, setPriority] = useState(1)
@@ -104,7 +104,7 @@ const SingleFilm = ({ film, width, selectFilm, changePriority, deleteFilm, desel
                             }}
                         >
                             <CardMedia
-                                onClick={() => router.push(`/${film.type}/${film.tmdbId}`)}
+                                onClick={() => !noClick ? router.push(`/${film.type}/${film.tmdbId}`) : {}}
                                 className='slide'
                                 component='img'
                                 image={film.posterPath ? `https://image.tmdb.org/t/p/w500/${film.posterPath}` : NoImage.src}

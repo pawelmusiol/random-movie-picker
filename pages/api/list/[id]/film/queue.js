@@ -67,6 +67,6 @@ export default async function handler(req, res) {
             })
             result = await listModel.findById(query.id)
             result = await getFilms(result.queue, query.language)
-            res.status(204).send(result)
+            res.status(200).send(result)
     }
 }

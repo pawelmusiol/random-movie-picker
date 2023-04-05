@@ -1,17 +1,18 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useTransition } from 'react'
 import { useRouter } from 'next/router'
 import axios from 'axios'
 import { useAppContext } from '../../context'
-import { StreamingProviders, MovieHeader, MovieMedia, Cast, MovieInfo, SimilarFilms, Carousel } from '../../components'
+import { StreamingProviders, MovieHeader, MovieMedia, Cast, MovieInfo, SimilarFilms, Carousel, LoadingAnimation } from '../../components'
 import { Typography, Grid, Box } from '@mui/material'
 
 const Movie = () => {
 
     const router = useRouter()
-    const [Data, setData] = useState(null)
+    const [Data, setData] = useState({ ready: false })
     const [AppState] = useAppContext()
 
     useEffect(() => {
+        setData({ ...Data, ready: false})
         const { id } = router.query
         if (id !== undefined) {
             axios.get(`/api/movie/${id}?language=${AppState.language}&type=tv`).then(res => {
@@ -22,7 +23,7 @@ const Movie = () => {
                     person.title = person.name
                     return person
                 })
-                setData(res.data)
+                setData({...res.data, ready: true})
 
             }).catch(err => {
                 router.push('/404')
@@ -32,7 +33,7 @@ const Movie = () => {
 
     return (
         <>
-            {Data ?
+            {Data.ready ?
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, /* overflowX: 'hidden' */ }}>
                     <MovieHeader {...Data.details} />
                     <Grid container direction='row' sx={{ justifyContent: 'space-between' }}>
@@ -45,7 +46,7 @@ const Movie = () => {
                     <SimilarFilms movies={Data.similarMovies} />
                 </Box>
                 :
-                <Typography>Loading</Typography>
+                <LoadingAnimation center />
             }
         </>
     )

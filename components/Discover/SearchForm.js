@@ -88,11 +88,11 @@ const SearchForm = ({ setResults }) => {
 
 
     const onSearch = () => {
-
+        setResults(Results => ({...Results, loading: true}))
         let queryData = [
             `type=${Type}`,
             'with_genres=' + Genres.map(genre => genre.id).join('.'),
-            `include_adult=${SafeSearch}`,
+            `include_adult=${!SafeSearch}`,
             `primary_release_date.gte=${Years.from}-01-01`,
             `primary_release_date.lte=${Years.to}-12-31`,
             `with_watch_providers=` + Providers.map(provider => provider.id).join('.'),
@@ -102,10 +102,10 @@ const SearchForm = ({ setResults }) => {
         ]
         console.log(queryData.join('&'))
         axios.get('/api/discover?' + queryData.join('&')).then(res => {
-            setResults({ ...res.data, type: Type })
+            setResults({ ...res.data, type: Type, loading: false })
             setSnackbarState({open: false})
         }).catch(err => {
-            setResults({})
+            setResults({loading: false})
             setSnackbarState({
                 open: true,
                 message: err.response.data.message,

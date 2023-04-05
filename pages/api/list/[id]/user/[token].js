@@ -24,6 +24,12 @@ export default async function handler(req, res) {
 
                 let user = await userModel.findById(tokenData.id)
                 console.log(user)
+                let checkForUser = await listModel.findOne({ _id: query.id, 'users._id': user._id })
+
+                if(checkForUser){
+                    res.status(406).send({message: 'You are already in this list'})
+                    break
+                }
                 let result = await listModel.updateOne({ _id: query.id }, {
                     $addToSet: {
                         'users': {

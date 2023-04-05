@@ -39,6 +39,12 @@ export default async function handler(req, res) {
                 }
                 else {
                     result = await listModel.findById(query.id)
+
+                    if(result.users.findIndex(user => new ObjectId(tokenData.id).equals(user.id)) < 0) {
+                        res.status(401).send()
+                        break
+                    }
+
                     console.log('dupa')
                     console.log(result)
                     if(!result){

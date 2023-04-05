@@ -1,4 +1,4 @@
-import { TextField, Button, Select, MenuItem, Box, InputLabel, FormControl } from "@mui/material"
+import { TextField, Button, Select, MenuItem, Box, InputLabel, FormControl, FormControlLabel, Checkbox } from "@mui/material"
 import { useState, useEffect } from "react"
 import axios from "axios"
 import { useAppContext } from "../context"
@@ -20,25 +20,26 @@ const Types = [
 
 ]
 
-const useSearch = (Name, Type, Genre, Language, onSearch, setSnackbarState) => {
+export const getProviders = (movies, userProviders) => {
+    //console.log(userProviders)
+    movies = movies.map(movie => {
+        if (movie.providers !== null && userProviders) {
+            movie.providers.forEach((provider) => {
+                let index = userProviders.findIndex(up => up === provider.provider_id)
+                if (index !== -1) movie.providerAvailable = true
+            })
+        }
+        return movie
+    })
+    return movies
+}
+
+const useSearch = (Name, Type, SafeSearch, Genre, Language, onSearch, setSnackbarState, onLoading) => {
 
     const router = useRouter()
     const [Error, setError] = useState({ name: false, type: false })
     const userProviders = useSelector(state => state.User.providers)
 
-    const getProviders = (movies) => {
-        //console.log(userProviders)
-        movies.map(movie => {
-            if (movie.providers !== null && userProviders) {
-                //console.log(movie.providers)
-                movie.providers.forEach((provider) => {
-                    let index = userProviders.findIndex(up => up === provider.provider_id)
-                    if (index !== -1) movie.providerAvailable = true
-                })
-            }
-        })
-        return movies
-    }
 
     const validateInputs = () => {
         let errors = { name: false, type: false }
@@ -48,25 +49,29 @@ const useSearch = (Name, Type, Genre, Language, onSearch, setSnackbarState) => {
         if (Type === '' || typeof Type === 'undefined') {
             errors = { ...errors, type: true }
         }
+        if (typeof SafeSearch === 'undefined') {
+            SafeSearch = false
+        }
         setError(errors)
         if (errors.name || errors.type) return false
         return true
     }
 
     const onChange = (Type, Genre) => {
+        onLoading(true)
         router.replace({
             pathname: router.pathname,
             query: { ...router.query, name: Name, type: Type }
         })
         if (validateInputs()) {
-            let uri = accents.remove(`/api/search?query=${Name}&type=${Type ? Type : 'multi'}&genre=${Genre}&page=1&language=${Language}`)
+            let uri = accents.remove(`/api/search?query=${Name}&type=${Type ? Type : 'multi'}&include_adult=${!SafeSearch}&genre=${Genre}&page=1&language=${Language}`)
 
             axios.get(uri).then((res) => {
-                res.data.results = getProviders(res.data.results)
-                onSearch({ ...res.data, type: Type, genre: Genre })
-                setSnackbarState({open: false})
+                res.data.results = getProviders(res.data.results, userProviders)
+                onSearch({ ...res.data, type: Type, genre: Genre, loading: false })
+                setSnackbarState({ open: false })
             }).catch((err) => {
-                onSearch({})
+                onSearch({ loading: false, error: true, message: err.response.data.message })
                 setSnackbarState({
                     open: true,
                     message: err.response.data.message,
@@ -93,21 +98,22 @@ export const useGenres = (Language, Type) => {
     return GenresList
 }
 
-const FilmSearch = ({ onSearch }) => {
+const FilmSearch = ({ onSearch, onLoading }) => {
     const router = useRouter()
     const [AppContext, setAppContext] = useAppContext()
     const [Type, setType] = useState("movie")
     const [SnackbarState, setSnackbarState] = useState({ open: false, message: '', error: false })
     const [FilmName, setFilmName] = useState(router.query.name)
+    const [SafeSearch, setSafeSearch] = useState(false)
 
 
-    const GenresList = useGenres(AppContext.language, Type)
+    //const GenresList = useGenres(AppContext.language, Type)
     const [Genre, setGenre] = useState("")
-    const [Search, Error] = useSearch(FilmName, Type, Genre, AppContext.language, onSearch, setSnackbarState)
+    const [Search, Error] = useSearch(FilmName, Type, SafeSearch, Genre, AppContext.language, onSearch, setSnackbarState, onLoading)
 
     useEffect(() => {
         Search(Type, Genre)
-    }, [FilmName, Type, Genre])
+    }, [FilmName, Type, SafeSearch, Genre])
 
     return (
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
@@ -118,6 +124,7 @@ const FilmSearch = ({ onSearch }) => {
                     {Types.map((type, index) => <MenuItem value={type.value} key={index}>{type.text}</MenuItem>)}
                 </Select>
             </FormControl>
+            <FormControlLabel control={<Checkbox checked={SafeSearch} onChange={e => setSafeSearch(e.target.checked)} />} label='Safe search' />
             {/* <FormControl fullWidth>
                 <InputLabel id="search-form-genre">Genre</InputLabel>
                 <Select value={Genre} onChange={e => { setGenre(e.target.value) }} label="genre" labelId="search-form-genre">

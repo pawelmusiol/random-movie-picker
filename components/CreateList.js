@@ -40,13 +40,15 @@ const NameInput = ({FormData, setFormData}) => (
 const CreateList = ({open, onClose, addToList}) => {
 
     const dispatch = useDispatch()
+    const [Disabled, setDisabled] = useState(false)
     const [SnackbarState, setSnackbarState] = useState({ open: false, message: '', error: false })
     const [FormData, setFormData] = useState({ name: '', private: true })
     const [Name, setName] = useState('')
 
     const user = useSelector(state => state.User)
 
-    const handleSubmit = () => {
+    const handleSubmit = (e) => {
+        setDisabled(true)
         if (user)
             axios.post(`/api/list?token=${user.token}`, { ...FormData, userId: user.id }).then(res => {
                 setSnackbarState({ open: true, message: res.data.text });
@@ -54,10 +56,12 @@ const CreateList = ({open, onClose, addToList}) => {
                 if(addToList) {
                     addToList(res.data.currentListId)
                 }
+                setDisabled(false)
                 onClose()
                 handleSnackbarClose()
             }).catch(err => {
                 setSnackbarState({ open: true, message: err.response.data.text, error: true });
+                setDisabled(false)
                 handleSnackbarClose()
             })
     }
@@ -80,7 +84,7 @@ const CreateList = ({open, onClose, addToList}) => {
                                 checked={FormData.private}
                                 onChange={e => setFormData({ ...FormData, private: e.target.checked })} />
                         } label="Private" />
-                        <Button onClick={handleSubmit}>
+                        <Button onClick={handleSubmit} disabled={Disabled}>
                             Create
                         </Button>
                     </DialogBox>

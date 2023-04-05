@@ -29,7 +29,7 @@ const Header = ({ id, type, title, originalTitle, releaseYear, runtime, voteAver
             <Grid item sx={{ display: 'flex', alignItems: 'center' }}>
                 <FavouriteButton id={id} type={type} />
                 <Typography>Add To List</Typography>
-                <AddMenu film={{ id: id, name: title, type: type }} user={user} lists={lists.length ? lists : [{ name: 'Log In' }]} />
+                <AddMenu film={{ id: id, name: title, type: type }} user={user} lists={lists} />
             </Grid>
         </Grid>
     )

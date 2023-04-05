@@ -4,6 +4,7 @@ import { CustomSnackbar, CreateList } from '.'
 import { useAppContext } from '../context'
 import { Add } from '../icons'
 import axios from 'axios'
+import { useSelector } from 'react-redux'
 
 const AddButton = styled('img')(({ theme }) => ({
     cursor: 'pointer',
@@ -20,6 +21,9 @@ const AddMenu = ({ lists, film, user }) => {
     const handleClose = () => {
         setAnchorEl(null)
     }
+
+
+
     const AddFilm = (id) => {
         axios.post(`/api/list/${id}/film?token=${user.token}`, { user: user, film: film }).then(res => {
             setSnackbarState({ open: true, message: res.data.text })
@@ -46,15 +50,24 @@ const AddMenu = ({ lists, film, user }) => {
                 onClose={handleClose}
             >
                 {lists.map((list, i) => <MenuItem
-                    onClick={() => list.name === "Log In" ? OpenModal() : AddFilm(list._id)}
+                    onClick={() => AddFilm(list._id)}
                     key={i}
                 >
                     {list.name}
                 </MenuItem>)}
-                {lists[0].name !== 'Log In' && <MenuItem /* onClick={handleClose} */>
+                
+                {user.token ? <MenuItem onClick={handleClose}>
                     <Button sx={{ padding: 1, minWidth: 0 }} onClick={() => setCreateListOpen(true)}>
                         <AddButton src={Add.src} />
-                    </Button></MenuItem>}
+                    </Button></MenuItem>
+                    :
+                    <MenuItem
+                        onClick={OpenModal}
+                        key={'login'}
+                    >
+                        Log In
+                    </MenuItem>
+                }
             </Menu>
         </>
     )

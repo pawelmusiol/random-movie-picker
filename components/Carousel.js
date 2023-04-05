@@ -2,6 +2,7 @@ import { Box, Typography, styled, useTheme, useMediaQuery } from '@mui/material'
 import { useState, useRef, useEffect } from "react"
 import { StarFilled, RightArrow, LeftArrow } from "../icons"
 import { useRouter } from "next/router"
+import { NoImage } from '../images'
 
 const CarouselOuter = styled(Box)({
     display: 'inline-block',
@@ -13,18 +14,21 @@ const Arrow = styled('img')({
     transition: '.3s',
     position: 'absolute',
     height: 32,
-    top: 'calc(50% - 80px)',
+    top: 'calc(50% - 30px)',
     zIndex: 2,
     cursor: 'pointer',
     ':hover': {
         height: 42,
-        top: 'calc(50% - 85px)',
+        top: 'calc(50% - 35px)',
     }
 })
 
 const MovieImg = styled('img')({
     width: '100%',
-    //alignSelf: 'center',
+    alignSelf: 'center',
+    aspectRatio: '2/3',
+    objectFit: 'contain'
+    
 })
 
 
@@ -107,9 +111,10 @@ const SingleMedia = ({ movie, width, onClick }) => {
                 textAlign: 'center',
                 width: width,
                 padding: 2,
+                flex: 1,
             }}
         >
-            <MovieImg src={'https://image.tmdb.org/t/p/w500' + movie.posterPath} />
+            <MovieImg src={movie.posterPath ? 'https://image.tmdb.org/t/p/w500' + movie.posterPath : NoImage.src} />
             <Typography>{movie.character}</Typography>
             <Typography sx={{ color: '#790604' }}>{movie.title}</Typography>
             {movie.voteAverage &&

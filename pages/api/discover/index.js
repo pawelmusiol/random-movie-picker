@@ -23,7 +23,7 @@ export default async function handler(req, res) {
                     page: data.page,
                     totalPages: data.total_pages,
                     totalResults: data.total_results,
-                    url: url.slice(0, url.length - 1),
+                    url: url,
                 })
             }
             break;

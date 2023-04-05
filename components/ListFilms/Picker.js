@@ -1,5 +1,6 @@
 import { Box, Button, Dialog, styled } from '@mui/material'
 import { useEffect, useState } from 'react'
+import ConfettiExplosion from 'react-confetti-explosion'
 import { SingleFilm } from '../'
 
 const PickerBox = styled(Box)(({ theme }) => ({
@@ -7,7 +8,7 @@ const PickerBox = styled(Box)(({ theme }) => ({
     display: 'flex',
     flexDirection: 'row',
     transform: 'scale(.8)',
-    [theme.breakpoints.down('md')]:{
+    [theme.breakpoints.down('md')]: {
         maxHeight: '100vh',
         minWidth: '100vw'
     }
@@ -18,15 +19,22 @@ const PickerBox = styled(Box)(({ theme }) => ({
 const Picker = ({ selectedFilms, addToQueue }) => {
 
 
+    const PickEffect = new Audio('/sounds/picking-effect.mp3')
     const [SelectedFilm, setSelectedFilm] = useState({
         left: { film: {}, sx: { transition: '.5s', transform: 'scale(.7)' } },
         main: { film: {}, sx: { transition: '.5s', transform: 'scale(1)', zIndex: 2 } },
         right: { film: {}, sx: { transition: '.5s', transform: 'scale(.7)' } }
     })
+    const [Confetti, setConfetti] = useState(false)
     const [FilmsToChoose, setFilmsToChoose] = useState([])
     const [ButtonDisabled, setButtonDisabled] = useState(true)
     const [Picking, setPicking] = useState(false)
     const [DialogOpen, setDialogOpen] = useState(false)
+    
+
+    useEffect(() => {
+        PickEffect.load()
+    },[])
 
     useEffect(() => {
         let midFilms = selectedFilms.map(film => {
@@ -62,6 +70,9 @@ const Picker = ({ selectedFilms, addToQueue }) => {
             setTimeout(() => {
 
                 if (i === 59) {
+                    PickEffect.play()
+                    setConfetti(true)
+                    setTimeout(() => { setConfetti(false) }, 3000)
                     setPicking(false)
                     setSelectedFilm(Films => {
                         return {
@@ -88,6 +99,7 @@ const Picker = ({ selectedFilms, addToQueue }) => {
         <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <Button disabled={ButtonDisabled} variant='contained' onClick={getOne} sx={{ maxWidth: 'fit-content' }}>Get Movie</Button>
             <Dialog
+            sx={{pointerEvents: Picking ? 'none' : 'auto'}}
                 onClick={e => {
                     if (!['left-film', 'main-film', 'right-film'].includes(e.target.parentNode.id)) {
                         addToQueue(SelectedFilm.main.film)
@@ -113,11 +125,21 @@ const Picker = ({ selectedFilms, addToQueue }) => {
                     }
                 }}>
                 {SelectedFilm.left.film.name &&
-                    <PickerBox >
-                        <SingleFilm id='left-film' noAction film={SelectedFilm.left.film} width={250} sx={SelectedFilm.left.sx} />
-                        <SingleFilm id='main-film' noAction film={SelectedFilm.main.film} width={250} sx={SelectedFilm.main.sx} />
-                        <SingleFilm id='right-film' noAction film={SelectedFilm.right.film} width={250} sx={SelectedFilm.right.sx} />
-                    </PickerBox>
+                    <>
+                        <PickerBox >
+                            <SingleFilm noClick id='left-film' noAction film={SelectedFilm.left.film} width={250} sx={SelectedFilm.left.sx} />
+                            <SingleFilm noClick id='main-film' noAction film={SelectedFilm.main.film} width={250} sx={SelectedFilm.main.sx} />
+                            <SingleFilm noClick id='right-film' noAction film={SelectedFilm.right.film} width={250} sx={SelectedFilm.right.sx} />
+                        </PickerBox>
+                        {/* <audio id='dupa' src={PickingEffect} /> */}
+                        {Confetti && <ConfettiExplosion 
+                        particleCount={350}
+                        width={2000}
+                        height='100vh'
+                        duration={3000}
+                        style={{ position: 'absolute', top: '50%', left: '50%', zIndex: 10001 }} 
+                        />}
+                    </>
                 }
             </Dialog>
         </Box>

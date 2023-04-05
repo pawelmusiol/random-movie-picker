@@ -10,7 +10,6 @@ const SearchResult = ({ results, type }) => {
     lists = lists.filter(list => list.name !== '')
         .map(list => { return { name: list.name, _id: list._id } })
     const getGenre = (result) => {
-        console.log(result.genre_ids)
         if(result.genre_ids.length){
             try {
                 return genres.find(genre => genre.id === result.genre_ids[0]).name
@@ -33,7 +32,7 @@ const SearchResult = ({ results, type }) => {
                         type={type}
                         id={result.id}
                         providerAvailable={result.providerAvailable}
-                        lists={lists.length ? lists : [{ name: 'Log In' }]}
+                        lists={lists}
                     />)}
                 </Grid>
             }

@@ -7,7 +7,7 @@ import { AppStateContext } from '../../context'
 import axios from 'axios'
 
 const Request = () => {
-    const [AppState, setAppState] = useContext(AppStateContext)
+    const [AppState, setAppState, openSnackbar] = useContext(AppStateContext)
     const router = useRouter()
     const { token } = router.query
     const user = useSelector(state => state.User)
@@ -31,6 +31,8 @@ const Request = () => {
     const acceptRequest = () => {
         axios.post(`/api/list/${ListData._id}/user/${user.token}`).then(res => {
             router.push('/list')
+        }).catch(err => {
+            openSnackbar({message: err.response.data.message, error: true})
         })
     }
 

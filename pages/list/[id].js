@@ -49,6 +49,9 @@ const SingleList = () => {
                 if(err.response.status === 404) {
                     router.push('/404')
                 }
+                if(err.response.status === 401) {
+                    router.push('/')
+                }
             })
         }
 

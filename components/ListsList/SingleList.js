@@ -172,12 +172,12 @@ const SingleList = ({ list, onDelete, onRequest, acceptRequest, onSwitchPrivacy 
                         </Avatar>
                     }
                     title={
-                        <Link href={`list/${list._id}`} >
+                        <Link href={`/list/${list._id}`} >
                             <Typography sx={{ cursor: 'pointer' }}>{list.name}</Typography>
                         </Link>
                     }
                     subheader={
-                        <Link href={`list/${list._id}`}>
+                        <Link href={`/list/${list._id}`}>
                             <Typography sx={{ cursor: 'pointer' }}>{OwnerName.charAt(0).toUpperCase() + OwnerName.slice(1)}</Typography>
                         </Link>
                     }
