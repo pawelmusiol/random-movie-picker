@@ -91,12 +91,12 @@ const SearchForm = ({ setResults }) => {
         setResults(Results => ({...Results, loading: true}))
         let queryData = [
             `type=${Type}`,
-            'with_genres=' + Genres.map(genre => genre.id).join('.'),
+            'with_genres=' + Genres.map(genre => genre.id).join(','),
             `include_adult=${!SafeSearch}`,
             `primary_release_date.gte=${Years.from}-01-01`,
             `primary_release_date.lte=${Years.to}-12-31`,
-            `with_watch_providers=` + Providers.map(provider => provider.id).join('.'),
-            Type === 'movie' ? `with_cast=` + SelectedCast.map(cast => cast.id).join('.') : '',
+            `with_watch_providers=` + Providers.map(provider => provider.id).join(','),
+            Type === 'movie' ? `with_cast=` + SelectedCast.map(cast => cast.id).join(',') : '',
             `language=${AppContext.language}`,
             `page=1`
         ]

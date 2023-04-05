@@ -64,7 +64,7 @@ const useSearch = (Name, Type, SafeSearch, Genre, Language, onSearch, setSnackba
             query: { ...router.query, name: Name, type: Type }
         })
         if (validateInputs()) {
-            let uri = accents.remove(`/api/search?query=${Name}&type=${Type ? Type : 'multi'}&include_adult=${!SafeSearch}&genre=${Genre}&page=1&language=${Language}`)
+            let uri = accents.remove(`/api/search/movie-tv?query=${Name}&type=${Type ? Type : 'multi'}&include_adult=${!SafeSearch}&genre=${Genre}&page=1&language=${Language}`)
 
             axios.get(uri).then((res) => {
                 res.data.results = getProviders(res.data.results, userProviders)

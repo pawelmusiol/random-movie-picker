@@ -11,6 +11,8 @@ import StarEmpty from './starEmpty.svg'
 import RightArrow from  './rightArrow.svg'
 import LeftArrow from  './leftArrow.svg'
 import LaptopCheckIcon from './laptopCheckIcon.svg'
+import Search from './search.svg'
+import Close from './close.svg'
 
 export { 
     Add,
@@ -25,5 +27,7 @@ export {
     StarEmpty,
     RightArrow,
     LeftArrow,
-    LaptopCheckIcon
+    LaptopCheckIcon,
+    Search,
+    Close,
 }

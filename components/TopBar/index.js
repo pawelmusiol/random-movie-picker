@@ -1,4 +1,4 @@
-import { AppBar, Typography, Toolbar, Box, Menu, MenuItem, useTheme, useMediaQuery } from '@mui/material'
+import { AppBar, Typography, Toolbar, Box, Menu, MenuItem, useTheme, useMediaQuery, TextField } from '@mui/material'
 import { MenuButton, LoginDialog } from '../'
 import HamburgerIcon from './HamburgerIcon'
 import MobileMenu from './MobileMenu'
@@ -6,7 +6,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { useCookies } from 'react-cookie'
-import axios from 'axios'
+import SearchBox from './SearchBox'
 
 const TopBar = () => {
     const [Open, setOpen] = useState(false)
@@ -50,6 +50,7 @@ const TopBar = () => {
                                     if (User.name) return <MenuButton href={page.href} key={page.href}>{page.text}</MenuButton>
                                 }
                             })}
+                            <SearchBox />
                         </>}
                 </Box>
                 <Box sx={{ flexGrow: 0 }}>
@@ -63,6 +64,8 @@ const TopBar = () => {
     )
 
 }
+
+
 
 const UserMenu = ({ user }) => {
     const [Cookies, setCookie, removeCookie] = useCookies(['token'])

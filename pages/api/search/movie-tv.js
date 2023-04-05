@@ -1,7 +1,7 @@
-import dbConnect from "../../utils/DbConnent"
+import dbConnect from "../../../utils/DbConnent"
 import axios from "axios"
 import { useState } from 'react'
-import { getProviders } from "./movie/[id]"
+import { getProviders } from ".././movie/[id]"
 
 export default async function handler(req, res) {
     const { method, query } = req
@@ -15,7 +15,7 @@ export default async function handler(req, res) {
             break;
             }
             
-            res.status(200).send({ results: data.results, page: data.page, totalPages: data.total_pages, totalResults: data.total_results, url: `api/search?query=${query.query}&type=${query.type}&include_adult=${query.include_adult}&page=1` })
+            res.status(200).send({ results: data.results, page: data.page, totalPages: data.total_pages, totalResults: data.total_results, url: `api/search/movie-tv?query=${query.query}&type=${query.type}&include_adult=${query.include_adult}&page=1` })
             break;
 
         default:
