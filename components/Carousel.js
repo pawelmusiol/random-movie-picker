@@ -28,12 +28,12 @@ const MovieImg = styled('img')({
     alignSelf: 'center',
     aspectRatio: '2/3',
     objectFit: 'contain'
-    
+
 })
 
 
 
-const Carousel = ({ data, title, type, voteAverage }) => {
+const Carousel = ({ data, title, type, voteAverage, onItemClick, noArrows }) => {
     const router = useRouter()
     const theme = useTheme()
     const mobile = useMediaQuery(theme.breakpoints.down('md'))
@@ -45,6 +45,7 @@ const Carousel = ({ data, title, type, voteAverage }) => {
     const goToMovie = (movie) => {
         if (movie.mediaType) router.push(`/${movie.mediaType}/${movie.id}`)
         else router.push(`/${type}/${movie.id}`)
+        onItemClick()
     }
 
     const moveDiv = (direction) => {
@@ -70,14 +71,16 @@ const Carousel = ({ data, title, type, voteAverage }) => {
                     <img src={StarFilled.src} style={{ width: 18 }} />
                 </Box>
             }
-            <Arrow
-                onClick={() => moveDiv('left')}
-                sx={{
-                    left: 0,
-                    display: LeftMargin === 0 ? 'none' : 'unset'
-                }}
-                src={LeftArrow.src}
-            />
+            {!noArrows &&
+                <Arrow
+                    onClick={() => moveDiv('left')}
+                    sx={{
+                        left: 0,
+                        display: LeftMargin === 0 ? 'none' : 'unset'
+                    }}
+                    src={LeftArrow.src}
+                />
+            }
             <CarouselOuter
                 sx={{
                     marginLeft: `calc(-20px + ${BoxWidth / interval}px * ${LeftMargin})`,
@@ -86,14 +89,16 @@ const Carousel = ({ data, title, type, voteAverage }) => {
             >
                 {data.map(movie => <SingleMedia onClick={() => goToMovie(movie)} movie={movie} key={movie.id} width={Math.floor(BoxWidth / interval)} />)}
             </CarouselOuter>
-            <Arrow
-                onClick={() => moveDiv('right')}
-                sx={{
-                    right: 0,
-                    display: -LeftMargin + 6 < data.length ? 'unset' : 'none',
-                }}
-                src={RightArrow.src}
-            />
+            {!noArrows &&
+                <Arrow
+                    onClick={() => moveDiv('right')}
+                    sx={{
+                        right: 0,
+                        display: -LeftMargin + 6 < data.length ? 'unset' : 'none',
+                    }}
+                    src={RightArrow.src}
+                />
+            }
         </Box>
     )
 }

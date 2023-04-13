@@ -10,8 +10,8 @@ export default async function handler(req, res) {
             let result = tmdbData.data.results.map(single => {
                 return {
                     id: single.id,
-                    name: single.name ? single.name : single.title,
-                    type: single.media_type === 'person' ? 'people' : single.media_type,
+                    title: single.name ? single.name : single.title,
+                    mediaType: single.media_type === 'person' ? 'people' : single.media_type,
                     posterPath: single.profile_path ? single.profile_path : single.poster_path,
                 }
             })

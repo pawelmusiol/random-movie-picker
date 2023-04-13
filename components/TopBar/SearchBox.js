@@ -15,7 +15,7 @@ const MainBox = styled(Box)(({ theme }) => ({
     '&:hover': {
         width: '35%',
     },
-    '& *':{
+    '& *': {
         cursor: 'text'
     }
 }))
@@ -29,9 +29,9 @@ const SearchBox = ({ }) => {
     console.log(OpenDialog)
     return (
         <MainBox /* onClick={() => setOpenDialog(true)} */>
-            <img src={Search.src} style={{ maxHeight: '24px' }} onClick={() => setOpenDialog(true)}/>
+            <img src={Search.src} style={{ maxHeight: '24px' }} onClick={() => setOpenDialog(true)} />
             <StyledTextField
-            onClick={() => setOpenDialog(true)}
+                onClick={() => setOpenDialog(true)}
                 variant="standard"
                 fullWidth
                 disabled

@@ -6,29 +6,29 @@ const SingleStar = styled('img')({
     width: 20,
 })
 
-const VoteStars = ({rating}) => {
-    
+const VoteStars = ({ rating }) => {
+
     let stars = []
 
-    for (let i = 0; i < Math.round(rating*2); i+=2) {
-        if (Math.round(rating*2) - i === 1) {
+    for (let i = 0; i < Math.round(rating * 2); i += 2) {
+        if (Math.round(rating * 2) - i === 1) {
             stars.push(<SingleStar src={StarHalf.src} />)
         }
-        else{
+        else {
             stars.push(<SingleStar src={StarFilled.src} />)
         }
     }
     if (stars.length < 10) {
         let len = 10 - stars.length
         for (let i = 0; i < len; i++) {
-            stars.push(<SingleStar src={StarEmpty.src}/>)
-            
+            stars.push(<SingleStar src={StarEmpty.src} />)
+
         }
     }
 
     return (
         <>
-        {stars}
+            {stars}
         </>
     )
 }

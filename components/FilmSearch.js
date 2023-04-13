@@ -59,10 +59,12 @@ const useSearch = (Name, Type, SafeSearch, Genre, Language, onSearch, setSnackba
 
     const onChange = (Type, Genre) => {
         onLoading(true)
-        router.replace({
-            pathname: router.pathname,
-            query: { ...router.query, name: Name, type: Type }
-        })
+        if (router.isReady) {
+            router.replace({
+                pathname: router.pathname,
+                query: { ...router.query, name: Name, type: Type }
+            })
+        }
         if (validateInputs()) {
             let uri = accents.remove(`/api/search/movie-tv?query=${Name}&type=${Type ? Type : 'multi'}&include_adult=${!SafeSearch}&genre=${Genre}&page=1&language=${Language}`)
 
@@ -110,6 +112,14 @@ const FilmSearch = ({ onSearch, onLoading }) => {
     //const GenresList = useGenres(AppContext.language, Type)
     const [Genre, setGenre] = useState("")
     const [Search, Error] = useSearch(FilmName, Type, SafeSearch, Genre, AppContext.language, onSearch, setSnackbarState, onLoading)
+
+    useEffect(() => {
+        if (router.isReady) {
+            console.log('dupa')
+            console.log(router.query)
+            setFilmName(router.query.name)
+        }
+    }, [router.isReady])
 
     useEffect(() => {
         Search(Type, Genre)

@@ -4,25 +4,40 @@ import { useState } from "react";
 import { useAppContext } from "../../context";
 import accents from 'remove-accents'
 
-const SearchBox = ({setResults}) => {
+const SearchBox = ({ setResults }) => {
 
     const [Context] = useAppContext()
 
     const onSearch = (text) => {
 
+        setResults({ ready: false })
         let url = accents.remove(`/api/search/multi?query=${text}&language=${Context.language}`)
 
         axios.get(url).then(res => {
             //to do
-            setResults({...res.data.results, ready: true})
+            let res1 = []
+            let res2 = []
+
+            if (res.data.results.length) {
+                res.data.results.forEach((singleResult, i) => {
+                    if (i < 6) {
+                        res1.push(singleResult)
+                    }
+                    else if (i < 12) {
+                        res2.push(singleResult)
+                    }
+                })
+                setResults({ results1: res1, results2: res2, ready: true })
+            }
+            else setResults({ ready: true })
+
         }).catch(err => {
             //to do
         })
     }
     return (
         <Box>
-            <Typography>Search For Everything</Typography>
-            <TextField variant='standard' onChange={e => onSearch(e.target.value)} />
+            <TextField sx={{ '& *': { fontSize: '2rem' } }} variant='standard' placeholder="Insert Text" fullWidth onChange={e => onSearch(e.target.value)} />
         </Box>
     )
 }
