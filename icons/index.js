@@ -13,8 +13,10 @@ import LeftArrow from  './leftArrow.svg'
 import LaptopCheckIcon from './laptopCheckIcon.svg'
 import Search from './search.svg'
 import Close from './close.svg'
+import ArrowDown from './arrowDown.svg'
 
 export { 
+    ArrowDown,
     Add,
     Delete,
     Favourite,
