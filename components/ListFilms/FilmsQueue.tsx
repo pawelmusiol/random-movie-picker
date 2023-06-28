@@ -2,11 +2,11 @@ import { Grid } from "@mui/material";
 import { SingleFilm } from '..'
 
 interface IProps {
-    movies: expandedListFilm,
+    movies: expandedListFilm[],
     onDelete: (id: string) => void,
 }
 
-const FilmsQueue = ({ movies, onDelete }) => {
+const FilmsQueue = ({ movies, onDelete }:IProps) => {
     return (
         <Grid container spacing={2} justifyContent='center'>
             {movies.length &&

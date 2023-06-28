@@ -1,6 +1,7 @@
 import { Box, Button, Dialog, styled, SxProps } from '@mui/material'
 import { useEffect, useState } from 'react'
 import ConfettiExplosion from 'react-confetti-explosion'
+import JSXStyle from 'styled-jsx/style'
 import { SingleFilm } from '../'
 
 const PickerBox = styled(Box)(({ theme }) => ({
@@ -117,9 +118,12 @@ const Picker = ({ selectedFilms, addToQueue }: IProps) => {
             <Dialog
                 sx={{ pointerEvents: Picking ? 'none' : 'auto' }}
                 onClick={e => {
-                    if (!['left-film', 'main-film', 'right-film'].includes(e.target.parentNode.id)) {
-                        addToQueue(SelectedFilm.main.film)
-                        setDialogOpen(false)
+                    if (e.target instanceof Element) {
+                        console.log(e.target)
+                        if (!['left-film', 'main-film', 'right-film'].includes(e.target.parentElement.id)) {
+                            addToQueue(SelectedFilm.main.film)
+                            setDialogOpen(false)
+                        }
                     }
                 }
                 }

@@ -73,12 +73,13 @@ const SingleFilm = ({ film, width, selectFilm, changePriority, deleteFilm, desel
         film.priority = parseInt(e.target.value)
         changePriority(film)
     }
-
+    console.log(noClick)
     return (
         <>
             {film ?
                 <Grid item xs={6} md={3} sx={{
                     ...sx,
+                    pointerEvents: noClick ? 'none' : 'unset',
                     '& > div': {
                         display: 'flex',
                         justifyContent: 'space-between',
@@ -89,6 +90,7 @@ const SingleFilm = ({ film, width, selectFilm, changePriority, deleteFilm, desel
                     <Card id={film._id} /* sx={{ ...sx, width: 250, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }} */ >
                         <Box>
                             <SCardHeader
+                            sx={{pointerEvents: noClick ? 'none' : 'auto',}}
                                 title={film.name}
                                 titleTypographyProps={{ sx: { fontSize: mobile ? 16 : 20 } }}
                                 action={!noAction &&
@@ -108,6 +110,7 @@ const SingleFilm = ({ film, width, selectFilm, changePriority, deleteFilm, desel
                         </Box>
                         <Box
                             sx={{
+                                pointerEvents: noClick ? 'none' : 'auto',
                                 display: 'flex',
                                 justifyContent: 'center',
                                 alignItems: 'streach',
@@ -118,13 +121,14 @@ const SingleFilm = ({ film, width, selectFilm, changePriority, deleteFilm, desel
                             }}
                         >
                             <CardMedia
-                                onClick={() => !noClick ? router.push(`/${film.type}/${film.tmdbId}`) : {}}
+                                onClick={() => noClick ? '' : router.push(`/${film.type}/${film.tmdbId}`)}
                                 className='slide'
                                 component='img'
                                 image={film.posterPath ? `https://image.tmdb.org/t/p/w500/${film.posterPath}` : NoImage.src}
                                 alt={`${film.name} image`}
 
                                 sx={{
+                                    pointerEvents: noClick ? 'none' : 'auto',
                                     flexShrink: 0,
                                     minHeight: '100%',
                                     maxHeight: '100%',
