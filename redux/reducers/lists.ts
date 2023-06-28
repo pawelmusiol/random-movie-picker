@@ -28,7 +28,7 @@ const initialValues = [{
 
 }]
 
-/* 
+
 export interface IList {
     _id: string,
     films: listFilm[],
@@ -38,8 +38,7 @@ export interface IList {
     requests: requestUser,
     users: listUser[],
 }
- */
-type ILists = [list]
+type ILists = IList[]
 
 interface ISetLists {
     type: 'SET_LISTS'
@@ -48,7 +47,7 @@ interface ISetLists {
 
 interface IUpdateList {
     type: 'UPDATE_LIST'
-    list: list
+    list: IList
 }
 
 interface IClearList {

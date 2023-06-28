@@ -181,9 +181,9 @@ interface listFilm extends listFilmBase {
 
 interface list {
     _id: string,
-    films: listFilm[],
     name: string,
     private: boolean,
+    films: listFilm[],
     queue?: listFilmBase[],
     requests?: requestUser,
     users: listUser[],

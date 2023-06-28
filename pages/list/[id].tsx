@@ -9,6 +9,8 @@ import { useAppContext } from '../../context'
 import { SimilarFilms } from '../../components'
 import useSetLists from '../../components/ListsList/useSetLists'
 import { useAppSelector } from '../../redux/hooks'
+import { IList } from '../../redux/reducers/lists'
+import { RootStore } from '../../redux/store'
 
 const SingleList = () => {
 
@@ -21,8 +23,8 @@ const SingleList = () => {
     const user = useAppSelector(state => state.User)
 
     const selectListById = createSelector(
-        state => state.Lists,
-        Lists => Lists.filter(list => list._id === id)
+        (state:RootStore) => state.Lists,
+        (Lists:IList[]) => Lists.filter(list => list._id === id)
     )
 
     const List = useSelector(selectListById)[0]

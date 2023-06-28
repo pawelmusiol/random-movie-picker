@@ -8,7 +8,7 @@ import { useAppSelector } from '../../redux/hooks'
 
 interface IProps {
     listId: string,
-    films: expandedListFilm[]
+    films: listFilm[]
 }
 
 const MoviePicker = ({ listId, films }: IProps) => {
