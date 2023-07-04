@@ -25,8 +25,8 @@ const LandingContainer = styled(Container)(({ theme }) => ({
         content: "''",
         position: 'absolute',
         width: '100vw',
-        height: '20vh',
-        background: '#010101',
+        height: '80vh',
+        background: 'linear-gradient(180deg, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 40%, rgba(255,255,255,0) 100%)',
     }
 }))
 
@@ -41,7 +41,7 @@ const MainBox = styled(Grid)(({ theme }) => ({
     alignItems: 'center',
     color: '#eee',
     zIndex: 4,
-    backdropFilter: ' brightness(50%)',
+    backdropFilter: ' brightness(30%)',
     '& > div': {
 
     },
