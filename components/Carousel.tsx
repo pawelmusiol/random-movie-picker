@@ -1,14 +1,23 @@
 import { Box, Typography, styled, useTheme, useMediaQuery } from '@mui/material'
-import { useState, useRef, useEffect } from "react"
+import React, { useState, useRef, useEffect } from "react"
 import { StarFilled, RightArrow, LeftArrow } from "../icons"
 import { useRouter } from "next/router"
 import { NoImage } from '../images'
+import { BoxProps } from '@mui/material'
+
 
 const CarouselOuter = styled(Box)({
-    display: 'inline-block',
     position: 'relative',
+    overflow: 'hidden',
+    //margin: '0 20px',
+
+}) as typeof Box
+
+const CarouselInner = styled(Box)({
+    display: 'inline-block',
     padding: '0 20px',
     transition: '.3s',
+    margin: 'auto',
 })
 const Arrow = styled('img')({
     transition: '.3s',
@@ -17,6 +26,11 @@ const Arrow = styled('img')({
     top: 'calc(50% - 30px)',
     zIndex: 2,
     cursor: 'pointer',
+    backgroundColor: 'white',
+    borderRadius: '50%',
+    border: '1px solid black',
+    boxShadow: ' 0px 0px 0px 1px rgba(0,0,0,1) inset',
+    //filter: 'brightness(0) saturate(100%) invert(50%) sepia(52%) saturate(4455%) hue-rotate(187deg) brightness(102%) contrast(91%)',
     ':hover': {
         height: 42,
         top: 'calc(50% - 35px)',
@@ -27,7 +41,13 @@ const MovieImg = styled('img')({
     width: '100%',
     alignSelf: 'center',
     aspectRatio: '2/3',
-    objectFit: 'contain'
+    objectFit: 'contain',
+    transition: '.3s',
+})
+
+const ImageBox = styled(Box)({
+    width: '100%',
+    overflow: 'hidden',
 
 })
 
@@ -38,7 +58,7 @@ interface IProps {
         character?: string,
         title: string,
         id: number
-        
+
     }[],
     title?: string,
     type?: string,
@@ -47,7 +67,7 @@ interface IProps {
     noArrows?: boolean
 }
 
-const Carousel = ({ data, title, type, voteAverage, onItemClick, noArrows }:IProps) => {
+const Carousel = ({ data, title, type, voteAverage, onItemClick, noArrows }: IProps) => {
     const router = useRouter()
     const theme = useTheme()
     const mobile = useMediaQuery(theme.breakpoints.down('md'))
@@ -77,7 +97,7 @@ const Carousel = ({ data, title, type, voteAverage, onItemClick, noArrows }:IPro
     }, [MainBoxRef])
 
     return (
-        <Box sx={{ position: 'relative', overflow: 'hidden' }} ref={MainBoxRef}>
+        <Box sx={{ position: 'relative', overflow: 'hidden' }}>
             <Typography>{title}</Typography>
             {voteAverage &&
                 <Box sx={{ display: 'flex', alignItems: "center" }}>
@@ -95,13 +115,15 @@ const Carousel = ({ data, title, type, voteAverage, onItemClick, noArrows }:IPro
                     src={LeftArrow.src}
                 />
             }
-            <CarouselOuter
-                sx={{
-                    marginLeft: `calc(-20px + ${BoxWidth / interval}px * ${LeftMargin})`,
-                    width: data.length * Math.floor(BoxWidth / interval) + 40 + 'vw'
-                }}
-            >
-                {data.map(movie => <SingleMedia onClick={() => goToMovie(movie)} movie={movie} key={movie.id} width={Math.floor(BoxWidth / interval)} />)}
+            <CarouselOuter ref={MainBoxRef}>
+                <CarouselInner
+                    sx={{
+                        marginLeft: `calc(-20px + ${BoxWidth / interval}px * ${LeftMargin})`,
+                        width: data.length * Math.floor(BoxWidth / interval) + 40 + 'vw'
+                    }}
+                >
+                    {data.map(movie => <SingleMedia onClick={() => goToMovie(movie)} movie={movie} key={movie.id} width={Math.floor(BoxWidth / interval)} />)}
+                </CarouselInner>
             </CarouselOuter>
             {!noArrows &&
                 <Arrow
@@ -131,9 +153,19 @@ const SingleMedia = ({ movie, width, onClick }) => {
                 width: width,
                 padding: 2,
                 flex: 1,
+                transition: '.5s',
+                '&:hover': {
+                    boxShadow: '0px 0px 9px 2px rgba(0,0,0,0.7) inset',
+                    '& img': {
+                        transform: 'scale(1.2)'
+                    }
+                },
+
             }}
         >
-            <MovieImg src={movie.posterPath ? 'https://image.tmdb.org/t/p/w500' + movie.posterPath : NoImage.src} />
+            <ImageBox>
+                <MovieImg src={movie.posterPath ? 'https://image.tmdb.org/t/p/w500' + movie.posterPath : NoImage.src} />
+            </ImageBox>
             <Typography>{movie.character}</Typography>
             <Typography sx={{ color: '#790604' }}>{movie.title}</Typography>
             {movie.voteAverage &&

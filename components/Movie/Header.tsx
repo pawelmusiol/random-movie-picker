@@ -12,7 +12,7 @@ interface IProps {
     releaseYear: string,
     runtime?: number
     voteAverage: number,
-    numberOfEpisodes?: number, 
+    numberOfEpisodes?: number,
     numberOfSeasons?: number,
 }
 const Header = ({ id, type, title, originalTitle, releaseYear, runtime, voteAverage, numberOfEpisodes, numberOfSeasons }: IProps) => {
@@ -34,14 +34,16 @@ const Header = ({ id, type, title, originalTitle, releaseYear, runtime, voteAver
 
                 </Box>
             </Grid>
-            <Grid item alignSelf='flex-end'>
+            <Grid item alignSelf='center'>
                 <Typography>User Rating</Typography>
                 <VoteStars rating={voteAverage} />
             </Grid>
-            <Grid item sx={{ display: 'flex', alignItems: 'center' }}>
+            <Grid item sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'space-evenly' }}>
                 <FavouriteButton id={id} type={type} />
-                <Typography>Add To List</Typography>
-                <AddMenu film={{ id: id, name: title, type: type }} user={user} lists={newLists} />
+                <Grid container direction='row' justifyContent='space-between' alignItems='center'>
+                    <Typography>Add To List</Typography>
+                    <AddMenu film={{ id: id, name: title, type: type }} user={user} lists={newLists} />
+                </Grid>
             </Grid>
         </Grid>
     )

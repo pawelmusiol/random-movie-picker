@@ -2,7 +2,7 @@ import { Box, styled, Paper, Typography, Grid } from '@mui/material'
 
 const ProviderImage = styled('img')({
     height: 60,
-    borderRadius: '22% 22% 0 0'
+    //borderRadius: '22% 22% 0 0'
 })
 
 const ProvidersBox = styled(Grid)(({ theme }) => ({
@@ -20,7 +20,7 @@ const ProvidersGrid = styled(Grid)(({ theme }) => ({
 const SingleProvider = ({ types, src }) => {
     return (
         <Grid item>
-            <Paper sx={{ height: 120, width: 60, borderRadius: '12px' }}>
+            <Paper sx={{ height: 120, width: 60, borderRadius: 0, flexDirection: 'row', }}>
                 <ProviderImage src={src} />
                 {types.map((type, i) =>
                     <Typography key={`type-${i}`} sx={{ textAlign: 'center' }}>{type}</Typography>

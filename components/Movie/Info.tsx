@@ -66,7 +66,7 @@ const Info = ({ overview, budget, genres, revenue, poster, firstEpisode, lastEpi
                 {router.pathname.includes('/movie') && <MovieInfo budget={budget} revenue={revenue} />}
                 {router.pathname.includes('/tv') && <TvInfo firstEpisode={firstEpisode} lastEpisode={lastEpisode} inProduction={inProduction} />}
                 <GenresList>
-                    {genres.map((genre, i) => <Paper key={'genre-' + i} sx={{ padding: 1 }}>
+                    {genres.map((genre, i) => <Paper key={'genre-' + i} sx={{ padding: 1, borderRadius:0 }}>
                         <Typography>{genre.name}</Typography>
                     </Paper>)}
                 </GenresList>

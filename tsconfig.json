@@ -2,6 +2,7 @@
   "compilerOptions": {
     "target": "ES6",
     "lib": [
+      "es6",
       "dom",
       "dom.iterable",
       "esnext"
@@ -18,7 +19,10 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
-    "declaration": true
+    "declaration": true,
+    "noImplicitAny": true,
+    "noImplicitThis": true,
+    "strictNullChecks": true
   },
   "include": [
     "next-env.d.ts",
@@ -27,5 +31,5 @@
 , "components/Discover/SearchForm.js", "components/SearchResults.js"  ],
   "exclude": [
     "node_modules"
-  ]
+  ],
 }
